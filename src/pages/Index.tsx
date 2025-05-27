@@ -54,7 +54,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Corner Logos - Made both the same size */}
+      {/* Corner Logos - RSL on left, new white logo on right */}
       <div className="absolute top-6 left-6 z-20">
         <img 
           src="/lovable-uploads/0f68fd5c-3ad9-4e6f-a774-38e9097cc75a.png" 
@@ -66,8 +66,8 @@ const Index = () => {
       <div className="absolute top-6 right-6 z-20">
         <img 
           src="/lovable-uploads/66b1167b-bb43-4ffc-9b2c-db26285e5756.png" 
-          alt="ETH Zurich" 
-          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+          alt="White Logo" 
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
         />
       </div>
 
