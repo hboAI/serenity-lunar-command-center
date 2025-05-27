@@ -54,7 +54,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Corner Logos - Made bigger and using white ETH logo */}
+      {/* Corner Logos - Made both the same size */}
       <div className="absolute top-6 left-6 z-20">
         <img 
           src="/lovable-uploads/f3401fdb-4b25-44cf-94a3-d9af0839f0cb.png" 
@@ -73,13 +73,13 @@ const Index = () => {
 
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-12">
-          {/* Header with Larger White Logo - Removed "Serenity Robot Control" text */}
+          {/* Header with Even Bigger White Logo */}
           <div className="text-center space-y-8 pt-8">
             <div className="flex justify-center mb-12">
               <img 
                 src="/lovable-uploads/1123e6b1-e446-4086-b579-ce12567a0a30.png" 
                 alt="Serenity Logo" 
-                className="h-32 md:h-40 object-contain filter brightness-0 invert drop-shadow-lg"
+                className="h-40 md:h-48 object-contain filter brightness-0 invert drop-shadow-lg"
               />
             </div>
             
@@ -163,12 +163,12 @@ const Index = () => {
                 </div>
               )}
 
-              {/* Updated Amount Input - Now using discrete slider */}
+              {/* Amount Input with Cyan Color Theme */}
               <div className="space-y-4">
                 <Label htmlFor="amount-slider" className="text-xl font-medium text-gray-100 drop-shadow-lg">
                   Amount: {amount[0].toFixed(1)}
                 </Label>
-                <div className="px-4 py-6 bg-black/20 rounded-xl border border-white/10">
+                <div className="px-4 py-6 bg-black/20 rounded-xl border border-space-cyan/30 hover:border-space-cyan/50 transition-all duration-300">
                   <Slider
                     id="amount-slider"
                     value={amount}
@@ -176,9 +176,9 @@ const Index = () => {
                     max={1.0}
                     min={0.0}
                     step={0.1}
-                    className="w-full"
+                    className="w-full [&_.slider-track]:bg-space-cyan/20 [&_.slider-range]:bg-space-cyan [&_.slider-thumb]:bg-space-cyan [&_.slider-thumb]:border-space-cyan"
                   />
-                  <div className="flex justify-between text-sm text-gray-300 mt-2">
+                  <div className="flex justify-between text-sm text-space-cyan mt-2">
                     <span>0.0</span>
                     <span>0.5</span>
                     <span>1.0</span>
