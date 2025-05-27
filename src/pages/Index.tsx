@@ -59,7 +59,7 @@ const Index = () => {
         <img 
           src="/lovable-uploads/f3401fdb-4b25-44cf-94a3-d9af0839f0cb.png" 
           alt="ETH Zurich" 
-          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
         />
       </div>
       
@@ -67,7 +67,7 @@ const Index = () => {
         <img 
           src="/lovable-uploads/0f68fd5c-3ad9-4e6f-a774-38e9097cc75a.png" 
           alt="RSL - Robotic Systems Lab" 
-          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
         />
       </div>
 
@@ -79,7 +79,7 @@ const Index = () => {
               <img 
                 src="/lovable-uploads/1123e6b1-e446-4086-b579-ce12567a0a30.png" 
                 alt="Serenity Logo" 
-                className="h-40 md:h-48 object-contain filter brightness-0 invert drop-shadow-lg"
+                className="h-48 md:h-56 object-contain filter brightness-0 invert drop-shadow-lg"
               />
             </div>
             
@@ -210,7 +210,7 @@ const Index = () => {
 
           {/* Footer */}
           <div className="text-center text-gray-300 text-lg pt-8">
-            <p className="drop-shadow-lg">© 2024 ETH Zurich - Robotic Systems Lab | Serenity Lunar Exploration Mission</p>
+            <p className="drop-shadow-lg">© Serenity Robotics | The Most Significant Spherical Robot</p>
           </div>
         </div>
       </div>
