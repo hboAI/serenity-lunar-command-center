@@ -57,17 +57,17 @@ const Index = () => {
       {/* Corner Logos - Made both the same size */}
       <div className="absolute top-6 left-6 z-20">
         <img 
-          src="/lovable-uploads/f3401fdb-4b25-44cf-94a3-d9af0839f0cb.png" 
-          alt="ETH Zurich" 
-          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+          src="/lovable-uploads/0f68fd5c-3ad9-4e6f-a774-38e9097cc75a.png" 
+          alt="RSL - Robotic Systems Lab" 
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
         />
       </div>
       
       <div className="absolute top-6 right-6 z-20">
         <img 
-          src="/lovable-uploads/0f68fd5c-3ad9-4e6f-a774-38e9097cc75a.png" 
-          alt="RSL - Robotic Systems Lab" 
-          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+          src="/lovable-uploads/66b1167b-bb43-4ffc-9b2c-db26285e5756.png" 
+          alt="ETH Zurich" 
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
         />
       </div>
 
