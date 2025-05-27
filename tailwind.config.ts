@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'space': ['Space Grotesk', 'system-ui', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,6 +65,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				space: {
+					dark: '#0F0F0F',
+					gray: '#1A1A1A',
+					lighter: '#2A2A2A',
+					cyan: '#00BFFF',
+					blue: '#1E90FF',
+					orange: '#ED840C',
+					gold: '#FCB314'
 				}
 			},
 			borderRadius: {
@@ -84,11 +97,29 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 5px rgba(0, 191, 255, 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 20px rgba(0, 191, 255, 0.8)'
+					}
+				},
+				'pulse-glow': {
+					'0%, 100%': {
+						opacity: '1'
+					},
+					'50%': {
+						opacity: '0.5'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glow': 'glow 2s ease-in-out infinite',
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite'
 			}
 		}
 	},
