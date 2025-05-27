@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Slider } from '@/components/ui/slider';
 
 const Index = () => {
   const [connectionStatus, setConnectionStatus] = useState('Connecting to robot...');
@@ -16,7 +17,7 @@ const Index = () => {
   const [selectedMode, setSelectedMode] = useState('0');
   const [position, setPosition] = useState('');
   const [vertexInput, setVertexInput] = useState('');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState([0.5]);
 
   const modes = [
     { value: '0', label: 'Core Position' },
@@ -53,37 +54,26 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Corner Logos */}
+      {/* Corner Logos - Made bigger and using white ETH logo */}
       <div className="absolute top-6 left-6 z-20">
         <img 
-          src="/lovable-uploads/0f68fd5c-3ad9-4e6f-a774-38e9097cc75a.png" 
+          src="/lovable-uploads/f3401fdb-4b25-44cf-94a3-d9af0839f0cb.png" 
           alt="ETH Zurich" 
-          className="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
         />
       </div>
       
       <div className="absolute top-6 right-6 z-20">
         <img 
-          src="/lovable-uploads/f3401fdb-4b25-44cf-94a3-d9af0839f0cb.png" 
+          src="/lovable-uploads/0f68fd5c-3ad9-4e6f-a774-38e9097cc75a.png" 
           alt="RSL - Robotic Systems Lab" 
-          className="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
         />
-      </div>
-
-      {/* Embedded Robot Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute bottom-0 right-0 w-1/2 h-full opacity-20">
-          <img 
-            src="/lovable-uploads/0aece87b-78f6-43f7-8668-4336d9728b39.png" 
-            alt="Serenity Robot Platform" 
-            className="w-full h-full object-contain object-bottom-right filter brightness-75"
-          />
-        </div>
       </div>
 
       <div className="relative z-10 p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-12">
-          {/* Header with Larger White Logo */}
+          {/* Header with Larger White Logo - Removed "Serenity Robot Control" text */}
           <div className="text-center space-y-8 pt-8">
             <div className="flex justify-center mb-12">
               <img 
@@ -93,9 +83,6 @@ const Index = () => {
               />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight drop-shadow-2xl">
-              Serenity Robot Control
-            </h1>
             <p className="text-2xl text-gray-200 font-light drop-shadow-lg">
               Lunar Exploration Mission Control Interface
             </p>
@@ -176,17 +163,27 @@ const Index = () => {
                 </div>
               )}
 
+              {/* Updated Amount Input - Now using discrete slider */}
               <div className="space-y-4">
-                <Label htmlFor="amount-input" className="text-xl font-medium text-gray-100 drop-shadow-lg">
-                  Amount (0.0 - 1.0)
+                <Label htmlFor="amount-slider" className="text-xl font-medium text-gray-100 drop-shadow-lg">
+                  Amount: {amount[0].toFixed(1)}
                 </Label>
-                <Input
-                  id="amount-input"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="e.g., 0.5"
-                  className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-14 text-lg backdrop-blur-sm"
-                />
+                <div className="px-4 py-6 bg-black/20 rounded-xl border border-white/10">
+                  <Slider
+                    id="amount-slider"
+                    value={amount}
+                    onValueChange={setAmount}
+                    max={1.0}
+                    min={0.0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-sm text-gray-300 mt-2">
+                    <span>0.0</span>
+                    <span>0.5</span>
+                    <span>1.0</span>
+                  </div>
+                </div>
               </div>
 
               <Separator className="bg-white/20" />
