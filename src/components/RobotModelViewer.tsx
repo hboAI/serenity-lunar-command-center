@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const RobotModel = () => {
   const { scene } = useGLTF('/lovable-uploads/robot_model.gltf');
-  return <primitive object={scene} scale={[0.5, 0.5, 0.5]} position={[0, -500, 0]} />;
+  return <primitive object={scene} scale={[0.5, 0.5, 0.5]} position={[0, -100, 0]} />;
 };
 
 const RobotModelViewer = () => {
