@@ -15,7 +15,7 @@ const CameraController = () => {
   useEffect(() => {
     // Ensure camera is properly positioned
     camera.position.set(5, 3, 5);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, -50, 0);
     camera.updateProjectionMatrix();
   }, [camera]);
 
@@ -53,7 +53,7 @@ const RobotModelViewer = () => {
               far: 1000
             }}
             onCreated={({ camera }) => {
-              camera.lookAt(0, 0, 0);
+              camera.lookAt(0, -50, 0);
             }}
           >
             <ambientLight intensity={0.6} />
