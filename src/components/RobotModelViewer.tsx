@@ -27,7 +27,7 @@ const RobotModel = ({ onCenterCalculated }: { onCenterCalculated: (center: THREE
     <group ref={modelRef}>
       <primitive object={scene} scale={[0.5, 0.5, 0.5]} position={[0, -1, 0]} />
       {/* Add coordinate system axes for reference */}
-      <axesHelper args={[2]} />
+      <primitive object={new THREE.AxesHelper(2)} />
     </group>
   );
 };
