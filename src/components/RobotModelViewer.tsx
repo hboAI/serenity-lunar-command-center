@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const RobotModel = () => {
   const { scene } = useGLTF('/lovable-uploads/robot_model.gltf');
-  return <primitive object={scene} scale={[2, 2, 2]} position={[0, 0, 0]} />;
+  return <primitive object={scene} scale={[0.5, 0.5, 0.5]} position={[0, -1, 0]} />;
 };
 
 const RobotModelViewer = () => {
@@ -19,10 +19,10 @@ const RobotModelViewer = () => {
       </CardHeader>
       <CardContent>
         <div className="h-96 w-full bg-black/20 rounded-xl border border-white/10 overflow-hidden">
-          <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            <pointLight position={[-10, -10, -5]} intensity={0.5} />
+          <Canvas camera={{ position: [3, 2, 3], fov: 60 }}>
+            <ambientLight intensity={0.6} />
+            <directionalLight position={[5, 5, 5]} intensity={0.8} />
+            <pointLight position={[-5, -5, -5]} intensity={0.3} />
             <Suspense fallback={null}>
               <RobotModel />
             </Suspense>
@@ -30,8 +30,9 @@ const RobotModelViewer = () => {
               enablePan={true}
               enableZoom={true}
               enableRotate={true}
-              minDistance={2}
-              maxDistance={20}
+              minDistance={1}
+              maxDistance={10}
+              target={[0, 0, 0]}
             />
           </Canvas>
         </div>
