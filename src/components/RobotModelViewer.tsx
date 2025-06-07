@@ -15,7 +15,7 @@ const CameraController = () => {
   useEffect(() => {
     // Ensure camera is properly positioned
     camera.position.set(5, 3, 5);
-    camera.lookAt(50, 0, 0);
+    camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
   }, [camera]);
 
@@ -27,7 +27,7 @@ const CameraController = () => {
       enableZoom={true}
       enableRotate={true}
       minDistance={1}
-      maxDistance={50}
+      maxDistance={100}
       maxPolarAngle={Math.PI * 0.9}
       minPolarAngle={Math.PI * 0.1}
       target={[0, 0, 0]}
