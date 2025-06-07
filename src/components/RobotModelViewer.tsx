@@ -15,7 +15,7 @@ const CameraController = () => {
   useEffect(() => {
     // Ensure camera is properly positioned
     camera.position.set(5, 3, 5);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(50, 0, 0);
     camera.updateProjectionMatrix();
   }, [camera]);
 
