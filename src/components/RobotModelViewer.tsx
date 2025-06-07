@@ -1,7 +1,7 @@
 
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, AxesHelper } from '@react-three/drei';
-import { Suspense, useEffect, useRef } from 'react';
+import { OrbitControls, useGLTF } from '@react-three/drei';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import * as THREE from 'three';
 
@@ -27,7 +27,7 @@ const RobotModel = ({ onCenterCalculated }: { onCenterCalculated: (center: THREE
     <group ref={modelRef}>
       <primitive object={scene} scale={[0.5, 0.5, 0.5]} position={[0, -1, 0]} />
       {/* Add coordinate system axes for reference */}
-      <AxesHelper args={[2]} />
+      <axesHelper args={[2]} />
     </group>
   );
 };
