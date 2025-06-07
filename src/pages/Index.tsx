@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
+import RobotModelViewer from '@/components/RobotModelViewer';
 
 const Index = () => {
   const [connectionStatus, setConnectionStatus] = useState('Connecting to robot...');
@@ -207,6 +207,9 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* 3D Robot Model Viewer */}
+          <RobotModelViewer />
 
           {/* Footer */}
           <div className="text-center text-gray-300 text-lg pt-8">
