@@ -31,8 +31,8 @@ const RobotModelViewer = () => {
               enableZoom={true}
               enableRotate={true}
               minDistance={1}
-              maxDistance={10}
-              target={[0, 0, 0]}
+              maxDistance={200}
+              target={[50, 0, 0]}
             />
           </Canvas>
         </div>
