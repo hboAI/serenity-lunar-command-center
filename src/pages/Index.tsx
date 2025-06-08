@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import RobotModelViewer from '@/components/RobotModelViewer';
 
 const Index = () => {
@@ -19,6 +20,13 @@ const Index = () => {
   const [position, setPosition] = useState('');
   const [vertexInput, setVertexInput] = useState('');
   const [amount, setAmount] = useState([0.5]);
+  
+  // New state for additional controls
+  const [robotPower, setRobotPower] = useState(false);
+  const [selectedLED, setSelectedLED] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [rosbagDirectory, setRosbagDirectory] = useState('/home/user/rosbags');
+  const [launchMode, setLaunchMode] = useState('Launch-All');
 
   const modes = [
     { value: '0', label: 'Core Position' },
@@ -27,6 +35,19 @@ const Index = () => {
     { value: '3', label: 'Vertex Direction for Goal' },
     { value: '4', label: 'Visual Target Mode' },
     { value: '5', label: 'Cave Mode' }
+  ];
+
+  const ledOptions = [
+    { value: 'chaser-1', label: 'Chaser-1-Animation' },
+    { value: 'chaser-2', label: 'Chaser-2-Animation' },
+    { value: 'startup', label: 'Startup-Animation' },
+    { value: 'stop', label: 'Stop' }
+  ];
+
+  const launchModes = [
+    { value: 'Launch-All', label: 'Launch-All' },
+    { value: 'Launch_no_mamba', label: 'Launch_no_mamba' },
+    { value: 'Launch_no_mamba_tof', label: 'Launch_no_mamba_tof' }
   ];
 
   useEffect(() => {
@@ -48,6 +69,32 @@ const Index = () => {
       setGoalStatus('Status: Goal Succeeded!');
       setGoalColor('text-green-400');
     }, 1500);
+  };
+
+  const handlePowerToggle = () => {
+    setRobotPower(!robotPower);
+    // TODO: Send power command to robot
+  };
+
+  const handleLEDCommand = () => {
+    if (selectedLED) {
+      // TODO: Send LED command to robot
+      console.log(`Sending LED command: ${selectedLED}`);
+    }
+  };
+
+  const handleRosbagToggle = () => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      // TODO: Send stop rosbag command
+      console.log('Stopping rosbag recording');
+    } else {
+      // Start recording
+      setIsRecording(true);
+      // TODO: Send start rosbag command with directory
+      console.log(`Starting rosbag recording in: ${rosbagDirectory}`);
+    }
   };
 
   const requiresPosition = selectedMode === '0' || selectedMode === '2';
@@ -100,14 +147,14 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Main Layout: Robot Model (Left/Center) + Control Panel (Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {/* Robot Model Section - Takes 2/3 of the space */}
-          <div className="lg:col-span-2">
+        {/* Main Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+          {/* Robot Model Section - Takes 3/4 of the space */}
+          <div className="lg:col-span-3">
             <RobotModelViewer />
           </div>
 
-          {/* Mission Control Panel - Takes 1/3 of the space */}
+          {/* Mission Control Panel - Takes 1/4 of the space */}
           <div className="lg:col-span-1">
             <Card className="bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-black/40 transition-all duration-500 h-fit">
               <CardHeader className="pb-6">
@@ -116,6 +163,108 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Power Control */}
+                <div className="space-y-3">
+                  <Label className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                    Robot Power
+                  </Label>
+                  <div className="flex items-center space-x-3">
+                    <Switch
+                      checked={robotPower}
+                      onCheckedChange={handlePowerToggle}
+                      className="data-[state=checked]:bg-green-500"
+                    />
+                    <span className={`font-medium ${robotPower ? 'text-green-400' : 'text-gray-400'}`}>
+                      {robotPower ? 'ON' : 'OFF'}
+                    </span>
+                  </div>
+                </div>
+
+                <Separator className="bg-white/20" />
+
+                {/* Launch Mode */}
+                <div className="space-y-3">
+                  <Label className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                    Launch Mode
+                  </Label>
+                  <Select value={launchMode} onValueChange={setLaunchMode}>
+                    <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-12 text-base backdrop-blur-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                      {launchModes.map((mode) => (
+                        <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-base py-2">
+                          {mode.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator className="bg-white/20" />
+
+                {/* LED Control */}
+                <div className="space-y-3">
+                  <Label className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                    LED Control
+                  </Label>
+                  <Select value={selectedLED} onValueChange={setSelectedLED}>
+                    <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-12 text-base backdrop-blur-sm">
+                      <SelectValue placeholder="Select LED animation" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                      {ledOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-base py-2">
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button 
+                    onClick={handleLEDCommand}
+                    disabled={!selectedLED}
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+                  >
+                    Apply LED
+                  </Button>
+                </div>
+
+                <Separator className="bg-white/20" />
+
+                {/* Rosbag Recording */}
+                <div className="space-y-3">
+                  <Label className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                    Rosbag Recording
+                  </Label>
+                  <div className="space-y-3">
+                    <Input
+                      value={rosbagDirectory}
+                      onChange={(e) => setRosbagDirectory(e.target.value)}
+                      placeholder="Recording directory"
+                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-12 text-base backdrop-blur-sm"
+                      disabled={isRecording}
+                    />
+                    <Button 
+                      onClick={handleRosbagToggle}
+                      className={`w-full transition-all duration-300 ${
+                        isRecording 
+                          ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' 
+                          : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                      }`}
+                    >
+                      {isRecording ? 'Stop Recording' : 'Start Recording'}
+                    </Button>
+                    {isRecording && (
+                      <div className="flex items-center space-x-2 text-red-400">
+                        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm">Recording...</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <Separator className="bg-white/20" />
+
                 {/* Mode Selection */}
                 <div className="space-y-3">
                   <Label htmlFor="mode-select" className="text-lg font-medium text-gray-100 drop-shadow-lg">
