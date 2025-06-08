@@ -23,7 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { RobotModelViewer } from '@/components/RobotModelViewer';
+import RobotModelViewer from '@/components/RobotModelViewer';
 import {
   Play,
   Square,
