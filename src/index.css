@@ -57,7 +57,7 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-image: 
-      linear-gradient(135deg, rgba(8, 8, 12, 0.95) 0%, rgba(15, 15, 20, 0.9) 50%, rgba(8, 8, 12, 0.95) 100%),
+      linear-gradient(135deg, rgba(8, 8, 12, 0.4) 0%, rgba(15, 15, 20, 0.3) 50%, rgba(8, 8, 12, 0.4) 100%),
       url('/lovable-uploads/fcf4f521-03b7-4b8a-aeb6-c3160fdb92e1.png');
     background-size: cover;
     background-position: center;
@@ -73,7 +73,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.05) 0%, rgba(8, 8, 12, 0.3) 70%);
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.02) 0%, rgba(8, 8, 12, 0.1) 70%);
     pointer-events: none;
     z-index: 1;
   }
