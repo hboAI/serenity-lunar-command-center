@@ -1,245 +1,274 @@
-
-import React, { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import RobotModelViewer from '@/components/RobotModelViewer';
-import {
-  Play,
-  Square,
-  RotateCcw,
-  Settings,
-  Activity,
-  Zap,
-  ChevronDown,
-  ChevronUp,
-  FolderOpen,
-  FileText,
-  Shield,
-  Cpu,
-  Radio,
-} from 'lucide-react';
 
 const Index = () => {
+  const [connectionStatus, setConnectionStatus] = useState('Connecting to robot...');
+  const [connectionColor, setConnectionColor] = useState('text-yellow-400');
+  const [goalStatus, setGoalStatus] = useState('Status: Idle');
+  const [goalColor, setGoalColor] = useState('text-gray-400');
+  const [selectedMode, setSelectedMode] = useState('0');
+  const [position, setPosition] = useState('');
+  const [vertexInput, setVertexInput] = useState('');
+  const [amount, setAmount] = useState([0.5]);
+  
+  // New state for additional controls
+  const [robotPower, setRobotPower] = useState(false);
+  const [ledPower, setLedPower] = useState(false);
+  const [selectedLED, setSelectedLED] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [selectedMode, setSelectedMode] = useState('1');
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-  const [bufferSize, setBufferSize] = useState([1024]);
-  const [compression, setCompression] = useState(false);
-  const [realTimeMode, setRealTimeMode] = useState(true);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [rosbagDirectory, setRosbagDirectory] = useState('/home/user/rosbags');
+  const [launchMode, setLaunchMode] = useState('Launch-All');
 
   const modes = [
-    { value: '1', label: 'Autonomous Navigation' },
-    { value: '2', label: 'Manual Control' },
-    { value: '3', label: 'Surveillance Mode' },
-    { value: '4', label: 'Emergency Response' },
-    { value: '5', label: 'Training Mode' },
+    { value: '0', label: 'Core Position' },
+    { value: '1', label: 'Vertex Direction for Core' },
+    { value: '2', label: 'Goal Position' },
+    { value: '3', label: 'Vertex Direction for Goal' },
+    { value: '4', label: 'Visual Target Mode' },
+    { value: '5', label: 'Cave Mode' }
   ];
 
-  const handleStartRecording = () => {
-    setIsRecording(true);
-    // Start recording logic here
+  const ledOptions = [
+    { value: 'chaser-1', label: 'Chaser-1-Animation' },
+    { value: 'chaser-2', label: 'Chaser-2-Animation' },
+    { value: 'startup', label: 'Startup-Animation' },
+    { value: 'stop', label: 'Stop' }
+  ];
+
+  const launchModes = [
+    { value: 'Launch-All', label: 'Launch-All' },
+    { value: 'Launch_no_mamba', label: 'Launch_no_mamba' },
+    { value: 'Launch_no_mamba_tof', label: 'Launch_no_mamba_tof' }
+  ];
+
+  useEffect(() => {
+    // Simulate connection logic (replace with actual ROS connection)
+    const timer = setTimeout(() => {
+      setConnectionStatus('Connected to robot on localhost');
+      setConnectionColor('text-green-400');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSendGoal = () => {
+    setGoalStatus('Status: Sending goal...');
+    setGoalColor('text-yellow-400');
+    
+    // Simulate goal processing
+    setTimeout(() => {
+      setGoalStatus('Status: Goal Succeeded!');
+      setGoalColor('text-green-400');
+    }, 1500);
   };
 
-  const handleStopRecording = () => {
-    setIsRecording(false);
-    setRecordingTime(0);
-    // Stop recording logic here
+  const handlePowerToggle = () => {
+    setRobotPower(!robotPower);
+    // TODO: Send power command to robot
   };
 
-  const handleReset = () => {
-    setRecordingTime(0);
-    // Reset logic here
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  React.useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isRecording) {
-      interval = setInterval(() => {
-        setRecordingTime((prev) => prev + 1);
-      }, 1000);
+  const handleLedPowerToggle = () => {
+    setLedPower(!ledPower);
+    if (!ledPower) {
+      setSelectedLED('');
     }
-    return () => clearInterval(interval);
-  }, [isRecording]);
+    // TODO: Send LED power command to robot
+  };
+
+  const handleLEDCommand = () => {
+    if (selectedLED) {
+      // TODO: Send LED command to robot
+      console.log(`Sending LED command: ${selectedLED}`);
+    }
+  };
+
+  const handleRosbagToggle = () => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      // TODO: Send stop rosbag command
+      console.log('Stopping rosbag recording');
+    } else {
+      // Start recording
+      setIsRecording(true);
+      // TODO: Send start rosbag command with directory
+      console.log(`Starting rosbag recording in: ${rosbagDirectory}`);
+    }
+  };
+
+  const handleDirectorySelect = () => {
+    // TODO: Implement file picker - for now just show a simple dialog
+    const newPath = prompt('Enter rosbag directory path:', rosbagDirectory);
+    if (newPath) {
+      setRosbagDirectory(newPath);
+    }
+  };
+
+  const handleOpenLogs = () => {
+    // TODO: Implement log viewer functionality
+    console.log('Opening logs...');
+  };
+
+  const requiresPosition = selectedMode === '0' || selectedMode === '2';
+  const requiresVertex = selectedMode === '1' || selectedMode === '3';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <TooltipProvider>
-        <div className="container mx-auto p-6 space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Shield className="w-10 h-10 text-sky-400" />
-              <h1 className="text-4xl font-bold text-slate-50 glow-text">
-                AUTONOMOUS SYSTEMS CONTROL
-              </h1>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Corner Logos */}
+      <div className="absolute top-6 left-6 z-20">
+        <img 
+          src="/lovable-uploads/03f0f802-f1fa-4cfc-86b1-d9a0cc73f98e.png" 
+          alt="RSL - Robotic Systems Lab" 
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+        />
+      </div>
+      
+      <div className="absolute top-6 right-6 z-20">
+        <img 
+          src="/lovable-uploads/66b1167b-bb43-4ffc-9b2c-db26285e5756.png" 
+          alt="White Logo" 
+          className="h-20 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+        />
+      </div>
+
+      <div className="relative z-10 p-4 md:p-8">
+        {/* Header with Logo */}
+        <div className="text-center space-y-8 pt-8 mb-12">
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/lovable-uploads/1123e6b1-e446-4086-b579-ce12567a0a30.png" 
+              alt="Serenity Logo" 
+              className="h-32 md:h-40 object-contain filter brightness-0 invert drop-shadow-lg"
+            />
+          </div>
+          
+          <p className="text-xl text-gray-200 font-light drop-shadow-lg">
+            Lunar Exploration Mission Control Interface
+          </p>
+        </div>
+
+        {/* Connection Status */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl px-8 py-4 hover:bg-black/50 transition-all duration-300">
+            <div className="flex items-center justify-center space-x-4">
+              <div className={`status-indicator ${connectionColor === 'text-green-400' ? 'bg-green-400' : connectionColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
+              <span className={`text-lg font-medium ${connectionColor} drop-shadow-lg`}>
+                {connectionStatus}
+              </span>
             </div>
-            <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-              Advanced robotics control interface for mission-critical operations
-            </p>
+          </div>
+        </div>
+
+        {/* Main Layout - Expanded to use more horizontal space */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 max-w-[1600px] mx-auto">
+          {/* Robot Model Section - Takes 3/4 of the space on larger screens */}
+          <div className="xl:col-span-3">
+            <RobotModelViewer />
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Left Column - 3D Model */}
-            <div className="space-y-6">
-              <Card className="tech-border">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-slate-200">
-                    <Cpu className="w-5 h-5 text-sky-400" />
-                    System Visualization
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-96 bg-slate-900/50 rounded-lg border border-slate-700/50 overflow-hidden">
-                    <RobotModelViewer />
+          {/* Mission Control Panel - Takes 1/4 of the space on larger screens */}
+          <div className="xl:col-span-1">
+            <Card className="bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-black/40 transition-all duration-500 h-fit">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl text-center text-white drop-shadow-lg">
+                  Mission Control Panel
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Power and LED Controls Row */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Robot Power */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-100">
+                      Robot Power
+                    </Label>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={robotPower}
+                        onCheckedChange={handlePowerToggle}
+                        className="data-[state=checked]:bg-green-500"
+                      />
+                      <span className={`text-sm font-medium ${robotPower ? 'text-green-400' : 'text-gray-400'}`}>
+                        {robotPower ? 'ON' : 'OFF'}
+                      </span>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
 
-              {/* System Status */}
-              <Card className="tech-border">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-slate-200">
-                    <Activity className="w-5 h-5 text-green-400" />
-                    System Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-300">Power</span>
-                        <div className="status-indicator bg-green-400"></div>
-                      </div>
-                      <Progress value={85} className="h-2" />
-                      <span className="text-xs text-slate-400">85% Operational</span>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-300">Network</span>
-                        <div className="status-indicator bg-sky-400"></div>
-                      </div>
-                      <Progress value={92} className="h-2" />
-                      <span className="text-xs text-slate-400">92% Signal</span>
+                  {/* LED Power */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-100">
+                      LED Control
+                    </Label>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={ledPower}
+                        onCheckedChange={handleLedPowerToggle}
+                        className="data-[state=checked]:bg-blue-500"
+                      />
+                      <span className={`text-sm font-medium ${ledPower ? 'text-blue-400' : 'text-gray-400'}`}>
+                        {ledPower ? 'ON' : 'OFF'}
+                      </span>
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-700/50">
-                    <div className="text-center">
-                      <div className="text-lg font-semibold text-slate-200">
-                        {formatTime(recordingTime)}
-                      </div>
-                      <div className="text-xs text-slate-400">Mission Time</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-semibold text-sky-400">ACTIVE</div>
-                      <div className="text-xs text-slate-400">Status</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-semibold text-green-400">SECURE</div>
-                      <div className="text-xs text-slate-400">Connection</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
 
-            {/* Right Column - Controls */}
-            <div className="space-y-6">
-              {/* Mission Control */}
-              <Card className="tech-border">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-slate-200">
-                    <Radio className="w-5 h-5 text-sky-400" />
-                    Mission Control
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Control Buttons */}
-                  <div className="flex gap-4">
-                    {!isRecording ? (
+                {/* LED Animation Options - Only show when LED is ON */}
+                {ledPower && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-100">
+                      LED Animation
+                    </Label>
+                    <div className="grid grid-cols-1 gap-2">
+                      <Select value={selectedLED} onValueChange={setSelectedLED}>
+                        <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-10 text-sm backdrop-blur-sm">
+                          <SelectValue placeholder="Select animation" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                          {ledOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-sm py-1">
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <Button 
-                        onClick={handleStartRecording} 
-                        className="control-button flex-1"
+                        onClick={handleLEDCommand}
+                        disabled={!selectedLED}
+                        size="sm"
+                        className="bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan transition-all duration-300"
                       >
-                        <Play className="w-4 h-4 mr-2" />
-                        DEPLOY
+                        Apply
                       </Button>
-                    ) : (
-                      <Button 
-                        onClick={handleStopRecording} 
-                        className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex-1"
-                      >
-                        <Square className="w-4 h-4 mr-2" />
-                        HALT
-                      </Button>
-                    )}
-                    
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            onClick={handleReset} 
-                            className="secondary-button"
-                            disabled={isRecording}
-                          >
-                            <RotateCcw className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Reset Mission</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-
-                    <Button className="secondary-button">
-                      <FolderOpen className="w-4 h-4 mr-2" />
-                      Open Logs
-                    </Button>
+                    </div>
                   </div>
+                )}
 
-                  {/* Mode Selection */}
-                  <div className="space-y-3">
-                    <Label className="text-slate-300 font-medium">Operation Mode</Label>
-                    <Select value={selectedMode} onValueChange={setSelectedMode}>
-                      <SelectTrigger className="tech-input">
+                <Separator className="bg-white/20" />
+
+                {/* Launch Mode and Rosbag Row */}
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Launch Mode */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-100">
+                      Launch Mode
+                    </Label>
+                    <Select value={launchMode} onValueChange={setLaunchMode}>
+                      <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-10 text-sm backdrop-blur-sm">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-600">
-                        {modes.map((mode) => (
-                          <SelectItem 
-                            key={mode.value} 
-                            value={mode.value}
-                            className="text-slate-200 focus:bg-slate-700 focus:text-slate-100"
-                          >
+                      <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                        {launchModes.map((mode) => (
+                          <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-sm py-1">
                             {mode.label}
                           </SelectItem>
                         ))}
@@ -247,131 +276,164 @@ const Index = () => {
                     </Select>
                   </div>
 
-                  {/* Input Fields */}
-                  <div className="grid grid-cols-2 gap-4">
+                  {/* Rosbag Recording */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-100">
+                      Rosbag Recording
+                    </Label>
                     <div className="space-y-2">
-                      <Label htmlFor="output-file" className="text-slate-300 font-medium">
-                        Output File
-                      </Label>
-                      <Input
-                        id="output-file"
-                        placeholder="mission_data.bag"
-                        className="tech-input"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="save-location" className="text-slate-300 font-medium">
-                        Save Location
-                      </Label>
-                      <Input
-                        id="save-location"
-                        placeholder="/missions/logs/"
-                        className="tech-input"
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={rosbagDirectory}
+                          onChange={(e) => setRosbagDirectory(e.target.value)}
+                          placeholder="Directory path"
+                          className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-10 text-sm backdrop-blur-sm flex-1"
+                          disabled={isRecording}
+                        />
+                        <Button 
+                          onClick={handleDirectorySelect}
+                          disabled={isRecording}
+                          size="sm"
+                          variant="outline"
+                          className="border-white/30 text-white hover:bg-white/10"
+                        >
+                          Browse
+                        </Button>
+                      </div>
+                      <Button 
+                        onClick={handleRosbagToggle}
+                        size="sm"
+                        className={`w-full transition-all duration-300 ${
+                          isRecording 
+                            ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' 
+                            : 'bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan'
+                        }`}
+                      >
+                        {isRecording ? 'Stop Recording' : 'Start Recording'}
+                      </Button>
+                      {isRecording && (
+                        <div className="flex items-center space-x-2 text-red-400">
+                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                          <span className="text-xs">Recording...</span>
+                        </div>
+                      )}
                     </div>
                   </div>
+                </div>
 
+                <Separator className="bg-white/20" />
+
+                {/* Mode Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="mode-select" className="text-sm font-medium text-gray-100">
+                    Operation Mode
+                  </Label>
+                  <Select value={selectedMode} onValueChange={setSelectedMode}>
+                    <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-10 text-sm backdrop-blur-sm">
+                      <SelectValue placeholder="Select operation mode" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                      {modes.map((mode) => (
+                        <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-sm py-1">
+                          {mode.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Input Fields */}
+                {requiresPosition && (
                   <div className="space-y-2">
-                    <Label htmlFor="topics" className="text-slate-300 font-medium">
-                      Data Channels
+                    <Label htmlFor="position-input" className="text-sm font-medium text-gray-100">
+                      Position (x, y, z)
                     </Label>
-                    <Textarea
-                      id="topics"
-                      placeholder="/nav/odometry /sensors/lidar /camera/rgb"
-                      rows={3}
-                      className="tech-input"
+                    <Input
+                      id="position-input"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      placeholder="e.g., 0.1 0.2 0.3"
+                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-10 text-sm backdrop-blur-sm"
                     />
                   </div>
-                </CardContent>
-              </Card>
+                )}
 
-              {/* Advanced Settings */}
-              <Card className="tech-border">
-                <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
-                  <CollapsibleTrigger asChild>
-                    <CardHeader className="pb-4 cursor-pointer hover:bg-slate-800/30 transition-colors rounded-t-lg">
-                      <CardTitle className="flex items-center justify-between text-slate-200">
-                        <div className="flex items-center gap-2">
-                          <Settings className="w-5 h-5 text-slate-400" />
-                          Advanced Configuration
-                        </div>
-                        {isAdvancedOpen ? (
-                          <ChevronUp className="w-4 h-4 text-slate-400" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-slate-400" />
-                        )}
-                      </CardTitle>
-                    </CardHeader>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <CardContent className="space-y-6 pt-0">
-                      <div className="space-y-4">
-                        <div className="space-y-3">
-                          <Label className="text-slate-300 font-medium">
-                            Buffer Size: {bufferSize[0]} MB
-                          </Label>
-                          <Slider
-                            value={bufferSize}
-                            onValueChange={setBufferSize}
-                            max={4096}
-                            min={256}
-                            step={256}
-                            className="w-full"
-                          />
-                        </div>
+                {requiresVertex && (
+                  <div className="space-y-2">
+                    <Label htmlFor="vertex-input" className="text-sm font-medium text-gray-100">
+                      Vertex Indices
+                    </Label>
+                    <Input
+                      id="vertex-input"
+                      value={vertexInput}
+                      onChange={(e) => setVertexInput(e.target.value)}
+                      placeholder="e.g., 1 2 3"
+                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-10 text-sm backdrop-blur-sm"
+                    />
+                  </div>
+                )}
 
-                        <div className="flex items-center justify-between">
-                          <Label className="text-slate-300 font-medium">
-                            Data Compression
-                          </Label>
-                          <Switch
-                            checked={compression}
-                            onCheckedChange={setCompression}
-                          />
-                        </div>
+                {/* Amount Slider */}
+                <div className="space-y-2">
+                  <Label htmlFor="amount-slider" className="text-sm font-medium text-gray-100">
+                    Amount: {amount[0].toFixed(1)}
+                  </Label>
+                  <div className="px-3 py-3 bg-black/20 rounded-xl border border-space-cyan/30 hover:border-space-cyan/50 transition-all duration-300">
+                    <Slider
+                      id="amount-slider"
+                      value={amount}
+                      onValueChange={setAmount}
+                      max={1.0}
+                      min={0.0}
+                      step={0.1}
+                      className="w-full [&_.slider-track]:bg-space-cyan/20 [&_.slider-range]:bg-space-cyan [&_.slider-thumb]:bg-space-cyan [&_.slider-thumb]:border-space-cyan"
+                    />
+                    <div className="flex justify-between text-xs text-space-cyan mt-1">
+                      <span>0.0</span>
+                      <span>0.5</span>
+                      <span>1.0</span>
+                    </div>
+                  </div>
+                </div>
 
-                        <div className="flex items-center justify-between">
-                          <Label className="text-slate-300 font-medium">
-                            Real-time Processing
-                          </Label>
-                          <Switch
-                            checked={realTimeMode}
-                            onCheckedChange={setRealTimeMode}
-                          />
-                        </div>
+                <Separator className="bg-white/20" />
 
-                        <div className="space-y-3">
-                          <Label className="text-slate-300 font-medium">Security Protocols</Label>
-                          <div className="space-y-2">
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="encryption" defaultChecked />
-                              <Label htmlFor="encryption" className="text-sm text-slate-300">
-                                End-to-end encryption
-                              </Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="auth" defaultChecked />
-                              <Label htmlFor="auth" className="text-sm text-slate-300">
-                                Multi-factor authentication
-                              </Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox id="audit" />
-                              <Label htmlFor="audit" className="text-sm text-slate-300">
-                                Audit trail logging
-                              </Label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </CollapsibleContent>
-                </Collapsible>
-              </Card>
-            </div>
+                {/* Open Logs Button */}
+                <Button 
+                  onClick={handleOpenLogs}
+                  variant="outline"
+                  className="w-full text-sm py-3 border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+                >
+                  Open Logs
+                </Button>
+
+                {/* Execute Button */}
+                <Button 
+                  onClick={handleSendGoal}
+                  className="w-full text-sm py-4 bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-space-cyan/50"
+                >
+                  Execute Mission Command
+                </Button>
+
+                {/* Status Display */}
+                <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl p-3 hover:bg-black/50 transition-all duration-300">
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className={`status-indicator ${goalColor === 'text-green-400' ? 'bg-green-400' : goalColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-gray-400'}`}></div>
+                    <span className={`font-medium text-sm ${goalColor} drop-shadow-lg`}>
+                      {goalStatus}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </TooltipProvider>
+
+        {/* Footer */}
+        <div className="text-center text-gray-300 text-lg pt-8 mt-12">
+          <p className="drop-shadow-lg">© Serenity Robotics | The Most Significant Spherical Robot</p>
+        </div>
+      </div>
     </div>
   );
 };
