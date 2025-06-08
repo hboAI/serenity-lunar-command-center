@@ -340,9 +340,6 @@ const Index = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Badge variant="outline" className="text-space-cyan border-space-cyan/50 bg-space-cyan/10 text-xs px-2 py-1">
-                    Mode {selectedMode}: {modes.find(m => m.value === selectedMode)?.label}
-                  </Badge>
                 </div>
 
                 {/* Input Fields */}
