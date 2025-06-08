@@ -156,10 +156,10 @@ const Index = () => {
   // New handlers for Control Release functionality
   const handleControlReleaseAction = (action: string) => {
     setControlReleaseAction(action);
-    if (action === 'open') {
-      setSelectedCircle(null); // Reset circle selection when switching to open
+    if (action === 'open' || action === 'close') {
+      setSelectedCircle(null); // Reset circle selection when switching actions
     } else {
-      // For close and power off all, execute immediately
+      // For power off all, execute immediately
       handleControlReleaseExecute(action);
     }
   };
@@ -171,15 +171,11 @@ const Index = () => {
   const handleControlReleaseExecute = (action?: string) => {
     const actionToExecute = action || controlReleaseAction;
     
-    if (actionToExecute === 'open' && selectedCircle !== null) {
-      console.log(`Executing Control Release: Open circle ${selectedCircle}`);
+    if ((actionToExecute === 'open' || actionToExecute === 'close') && selectedCircle !== null) {
+      console.log(`Executing Control Release: ${actionToExecute} circle ${selectedCircle}`);
       setIsControlReleaseDialogOpen(false);
       setControlReleaseAction('');
       setSelectedCircle(null);
-    } else if (actionToExecute === 'close') {
-      console.log('Executing Control Release: Close all');
-      setIsControlReleaseDialogOpen(false);
-      setControlReleaseAction('');
     } else if (actionToExecute === 'power off all') {
       console.log('Executing Control Release: Power off all');
       setIsControlReleaseDialogOpen(false);
@@ -579,9 +575,12 @@ const Index = () => {
                             Open
                           </Button>
                           <Button
-                            variant="outline"
+                            variant={controlReleaseAction === 'close' ? 'default' : 'outline'}
                             onClick={() => handleControlReleaseAction('close')}
-                            className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                            className={controlReleaseAction === 'close' 
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                              : 'border-slate-600 text-slate-200 hover:bg-slate-800'
+                            }
                           >
                             Close
                           </Button>
@@ -595,8 +594,8 @@ const Index = () => {
                         </div>
                       </div>
 
-                      {/* Circle Selection for Open Action */}
-                      {controlReleaseAction === 'open' && (
+                      {/* Circle Selection for Open and Close Actions */}
+                      {(controlReleaseAction === 'open' || controlReleaseAction === 'close') && (
                         <div className="space-y-3">
                           <Label className="text-sm font-medium text-slate-200">
                             Select Circle (0-5)
@@ -622,7 +621,7 @@ const Index = () => {
                               disabled={selectedCircle === null}
                               className="bg-blue-600 hover:bg-blue-700 text-white"
                             >
-                              Execute Open
+                              Execute {controlReleaseAction === 'open' ? 'Open' : 'Close'}
                             </Button>
                           </div>
                         </div>
