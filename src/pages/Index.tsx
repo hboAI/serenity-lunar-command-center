@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -54,7 +55,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Corner Logos - New RSL logo on left, white logo on right */}
+      {/* Corner Logos */}
       <div className="absolute top-6 left-6 z-20">
         <img 
           src="/lovable-uploads/03f0f802-f1fa-4cfc-86b1-d9a0cc73f98e.png" 
@@ -72,149 +73,154 @@ const Index = () => {
       </div>
 
       <div className="relative z-10 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto space-y-12">
-          {/* Header with Even Bigger White Logo */}
-          <div className="text-center space-y-8 pt-8">
-            <div className="flex justify-center mb-12">
-              <img 
-                src="/lovable-uploads/1123e6b1-e446-4086-b579-ce12567a0a30.png" 
-                alt="Serenity Logo" 
-                className="h-48 md:h-56 object-contain filter brightness-0 invert drop-shadow-lg"
-              />
-            </div>
-            
-            <p className="text-2xl text-gray-200 font-light drop-shadow-lg">
-              Lunar Exploration Mission Control Interface
-            </p>
+        {/* Header with Logo */}
+        <div className="text-center space-y-8 pt-8 mb-12">
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/lovable-uploads/1123e6b1-e446-4086-b579-ce12567a0a30.png" 
+              alt="Serenity Logo" 
+              className="h-32 md:h-40 object-contain filter brightness-0 invert drop-shadow-lg"
+            />
           </div>
+          
+          <p className="text-xl text-gray-200 font-light drop-shadow-lg">
+            Lunar Exploration Mission Control Interface
+          </p>
+        </div>
 
-          {/* Simplified Connection Status */}
-          <div className="flex justify-center">
-            <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl px-8 py-4 hover:bg-black/50 transition-all duration-300">
-              <div className="flex items-center justify-center space-x-4">
-                <div className={`status-indicator ${connectionColor === 'text-green-400' ? 'bg-green-400' : connectionColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
-                <span className={`text-lg font-medium ${connectionColor} drop-shadow-lg`}>
-                  {connectionStatus}
-                </span>
-              </div>
+        {/* Connection Status */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl px-8 py-4 hover:bg-black/50 transition-all duration-300">
+            <div className="flex items-center justify-center space-x-4">
+              <div className={`status-indicator ${connectionColor === 'text-green-400' ? 'bg-green-400' : connectionColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
+              <span className={`text-lg font-medium ${connectionColor} drop-shadow-lg`}>
+                {connectionStatus}
+              </span>
             </div>
           </div>
+        </div>
 
-          {/* Enhanced Control Panel */}
-          <Card className="bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-black/40 transition-all duration-500">
-            <CardHeader className="pb-8">
-              <CardTitle className="text-3xl text-center text-white drop-shadow-lg">
-                Mission Control Panel
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              {/* Enhanced Mode Selection */}
-              <div className="space-y-4">
-                <Label htmlFor="mode-select" className="text-xl font-medium text-gray-100 drop-shadow-lg">
-                  Operation Mode
-                </Label>
-                <Select value={selectedMode} onValueChange={setSelectedMode}>
-                  <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-14 text-lg backdrop-blur-sm">
-                    <SelectValue placeholder="Select operation mode" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
-                    {modes.map((mode) => (
-                      <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-lg py-3">
-                        {mode.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Badge variant="outline" className="text-space-cyan border-space-cyan/50 bg-space-cyan/10 text-lg px-4 py-2">
-                  Mode {selectedMode}: {modes.find(m => m.value === selectedMode)?.label}
-                </Badge>
-              </div>
+        {/* Main Layout: Robot Model (Left/Center) + Control Panel (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {/* Robot Model Section - Takes 2/3 of the space */}
+          <div className="lg:col-span-2">
+            <RobotModelViewer />
+          </div>
 
-              <Separator className="bg-white/20" />
-
-              {/* Enhanced Input Fields */}
-              {requiresPosition && (
-                <div className="space-y-4">
-                  <Label htmlFor="position-input" className="text-xl font-medium text-gray-100 drop-shadow-lg">
-                    Position Coordinates (x, y, z)
+          {/* Mission Control Panel - Takes 1/3 of the space */}
+          <div className="lg:col-span-1">
+            <Card className="bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-black/40 transition-all duration-500 h-fit">
+              <CardHeader className="pb-6">
+                <CardTitle className="text-2xl text-center text-white drop-shadow-lg">
+                  Mission Control Panel
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Mode Selection */}
+                <div className="space-y-3">
+                  <Label htmlFor="mode-select" className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                    Operation Mode
                   </Label>
-                  <Input
-                    id="position-input"
-                    value={position}
-                    onChange={(e) => setPosition(e.target.value)}
-                    placeholder="e.g., 0.1 0.2 0.3"
-                    className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-14 text-lg backdrop-blur-sm"
-                  />
+                  <Select value={selectedMode} onValueChange={setSelectedMode}>
+                    <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-12 text-base backdrop-blur-sm">
+                      <SelectValue placeholder="Select operation mode" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                      {modes.map((mode) => (
+                        <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-base py-2">
+                          {mode.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Badge variant="outline" className="text-space-cyan border-space-cyan/50 bg-space-cyan/10 text-sm px-3 py-1">
+                    Mode {selectedMode}: {modes.find(m => m.value === selectedMode)?.label}
+                  </Badge>
                 </div>
-              )}
 
-              {requiresVertex && (
-                <div className="space-y-4">
-                  <Label htmlFor="vertex-input" className="text-xl font-medium text-gray-100 drop-shadow-lg">
-                    Vertex Indices
+                <Separator className="bg-white/20" />
+
+                {/* Input Fields */}
+                {requiresPosition && (
+                  <div className="space-y-3">
+                    <Label htmlFor="position-input" className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                      Position Coordinates (x, y, z)
+                    </Label>
+                    <Input
+                      id="position-input"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      placeholder="e.g., 0.1 0.2 0.3"
+                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-12 text-base backdrop-blur-sm"
+                    />
+                  </div>
+                )}
+
+                {requiresVertex && (
+                  <div className="space-y-3">
+                    <Label htmlFor="vertex-input" className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                      Vertex Indices
+                    </Label>
+                    <Input
+                      id="vertex-input"
+                      value={vertexInput}
+                      onChange={(e) => setVertexInput(e.target.value)}
+                      placeholder="e.g., 1 2 3"
+                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-12 text-base backdrop-blur-sm"
+                    />
+                  </div>
+                )}
+
+                {/* Amount Slider */}
+                <div className="space-y-3">
+                  <Label htmlFor="amount-slider" className="text-lg font-medium text-gray-100 drop-shadow-lg">
+                    Amount: {amount[0].toFixed(1)}
                   </Label>
-                  <Input
-                    id="vertex-input"
-                    value={vertexInput}
-                    onChange={(e) => setVertexInput(e.target.value)}
-                    placeholder="e.g., 1 2 3"
-                    className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-14 text-lg backdrop-blur-sm"
-                  />
-                </div>
-              )}
-
-              {/* Amount Input with Cyan Color Theme */}
-              <div className="space-y-4">
-                <Label htmlFor="amount-slider" className="text-xl font-medium text-gray-100 drop-shadow-lg">
-                  Amount: {amount[0].toFixed(1)}
-                </Label>
-                <div className="px-4 py-6 bg-black/20 rounded-xl border border-space-cyan/30 hover:border-space-cyan/50 transition-all duration-300">
-                  <Slider
-                    id="amount-slider"
-                    value={amount}
-                    onValueChange={setAmount}
-                    max={1.0}
-                    min={0.0}
-                    step={0.1}
-                    className="w-full [&_.slider-track]:bg-space-cyan/20 [&_.slider-range]:bg-space-cyan [&_.slider-thumb]:bg-space-cyan [&_.slider-thumb]:border-space-cyan"
-                  />
-                  <div className="flex justify-between text-sm text-space-cyan mt-2">
-                    <span>0.0</span>
-                    <span>0.5</span>
-                    <span>1.0</span>
+                  <div className="px-4 py-4 bg-black/20 rounded-xl border border-space-cyan/30 hover:border-space-cyan/50 transition-all duration-300">
+                    <Slider
+                      id="amount-slider"
+                      value={amount}
+                      onValueChange={setAmount}
+                      max={1.0}
+                      min={0.0}
+                      step={0.1}
+                      className="w-full [&_.slider-track]:bg-space-cyan/20 [&_.slider-range]:bg-space-cyan [&_.slider-thumb]:bg-space-cyan [&_.slider-thumb]:border-space-cyan"
+                    />
+                    <div className="flex justify-between text-sm text-space-cyan mt-2">
+                      <span>0.0</span>
+                      <span>0.5</span>
+                      <span>1.0</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <Separator className="bg-white/20" />
+                <Separator className="bg-white/20" />
 
-              {/* Enhanced Execute Button */}
-              <Button 
-                onClick={handleSendGoal}
-                className="w-full text-xl py-6 bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-space-cyan/50"
-              >
-                Execute Mission Command
-              </Button>
+                {/* Execute Button */}
+                <Button 
+                  onClick={handleSendGoal}
+                  className="w-full text-lg py-5 bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-space-cyan/50"
+                >
+                  Execute Mission Command
+                </Button>
 
-              {/* Enhanced Status Display */}
-              <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl p-6 hover:bg-black/50 transition-all duration-300">
-                <div className="flex items-center justify-center space-x-4">
-                  <div className={`status-indicator ${goalColor === 'text-green-400' ? 'bg-green-400' : goalColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-gray-400'}`}></div>
-                  <span className={`font-medium text-lg ${goalColor} drop-shadow-lg`}>
-                    {goalStatus}
-                  </span>
+                {/* Status Display */}
+                <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl p-4 hover:bg-black/50 transition-all duration-300">
+                  <div className="flex items-center justify-center space-x-4">
+                    <div className={`status-indicator ${goalColor === 'text-green-400' ? 'bg-green-400' : goalColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-gray-400'}`}></div>
+                    <span className={`font-medium text-base ${goalColor} drop-shadow-lg`}>
+                      {goalStatus}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 3D Robot Model Viewer */}
-          <RobotModelViewer />
-
-          {/* Footer */}
-          <div className="text-center text-gray-300 text-lg pt-8">
-            <p className="drop-shadow-lg">© Serenity Robotics | The Most Significant Spherical Robot</p>
+              </CardContent>
+            </Card>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-gray-300 text-lg pt-8 mt-12">
+          <p className="drop-shadow-lg">© Serenity Robotics | The Most Significant Spherical Robot</p>
         </div>
       </div>
     </div>
