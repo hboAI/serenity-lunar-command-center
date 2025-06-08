@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -165,15 +166,15 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Main Layout - Updated for better horizontal space usage */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {/* Robot Model Section - Takes 2/3 of the space */}
-          <div className="lg:col-span-2">
+        {/* Main Layout - Expanded to use more horizontal space */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 max-w-[1600px] mx-auto">
+          {/* Robot Model Section - Takes 3/4 of the space on larger screens */}
+          <div className="xl:col-span-3">
             <RobotModelViewer />
           </div>
 
-          {/* Mission Control Panel - Takes 1/3 of the space */}
-          <div className="lg:col-span-1">
+          {/* Mission Control Panel - Takes 1/4 of the space on larger screens */}
+          <div className="xl:col-span-1">
             <Card className="bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-black/40 transition-all duration-500 h-fit">
               <CardHeader className="pb-4">
                 <CardTitle className="text-xl text-center text-white drop-shadow-lg">

@@ -18,7 +18,7 @@ const RobotModelViewer = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="h-[600px] w-full bg-black/20 rounded-xl border border-white/10 overflow-hidden">
+        <div className="h-[700px] w-full bg-black/20 rounded-xl border border-white/10 overflow-hidden">
           <Canvas camera={{ position: [100, 20, 30], fov: 60 }}>
             <ambientLight intensity={0.6} />
             <directionalLight position={[5, 5, 5]} intensity={0.8} />
