@@ -1,11 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
@@ -114,6 +112,11 @@ const Index = () => {
     if (newPath) {
       setRosbagDirectory(newPath);
     }
+  };
+
+  const handleOpenLogs = () => {
+    // TODO: Implement log viewer functionality
+    console.log('Opening logs...');
   };
 
   const requiresPosition = selectedMode === '0' || selectedMode === '2';
@@ -397,6 +400,15 @@ const Index = () => {
                 </div>
 
                 <Separator className="bg-white/20" />
+
+                {/* Open Logs Button */}
+                <Button 
+                  onClick={handleOpenLogs}
+                  variant="outline"
+                  className="w-full text-sm py-3 border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+                >
+                  Open Logs
+                </Button>
 
                 {/* Execute Button */}
                 <Button 
