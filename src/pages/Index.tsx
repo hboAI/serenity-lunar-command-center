@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,12 +23,14 @@ const Index = () => {
   const [amount, setAmount] = useState([0.5]);
   
   // New state for additional controls
-  const [robotPower, setRobotPower] = useState(false);
   const [ledPower, setLedPower] = useState(false);
   const [selectedLED, setSelectedLED] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [rosbagDirectory, setRosbagDirectory] = useState('/home/user/rosbags');
-  const [launchMode, setLaunchMode] = useState('Launch-All');
+
+  // New state for Launch Robot functionality
+  const [isLaunchDialogOpen, setIsLaunchDialogOpen] = useState(false);
+  const [selectedLaunchMode, setSelectedLaunchMode] = useState('Launch-All');
 
   // New state for vertex and position selection
   const [selectedVertices, setSelectedVertices] = useState<number[]>([]);
@@ -83,9 +86,10 @@ const Index = () => {
     }, 1500);
   };
 
-  const handlePowerToggle = () => {
-    setRobotPower(!robotPower);
-    // TODO: Send power command to robot
+  const handleLaunchRobot = () => {
+    console.log(`Launching robot with mode: ${selectedLaunchMode}`);
+    setIsLaunchDialogOpen(false);
+    // TODO: Send launch command to robot
   };
 
   const handleLedPowerToggle = () => {
@@ -248,23 +252,62 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Power and LED Controls Row */}
+                {/* Launch Robot and LED Controls Row */}
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Robot Power */}
+                  {/* Launch Robot Button */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-slate-200">
-                      Robot Power
+                      Robot Control
                     </Label>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        checked={robotPower}
-                        onCheckedChange={handlePowerToggle}
-                        className="data-[state=checked]:bg-green-500"
-                      />
-                      <span className={`text-sm font-medium ${robotPower ? 'text-green-400' : 'text-slate-400'}`}>
-                        {robotPower ? 'ON' : 'OFF'}
-                      </span>
-                    </div>
+                    <Dialog open={isLaunchDialogOpen} onOpenChange={setIsLaunchDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="outline"
+                          className="w-full text-sm border-slate-600 text-slate-200 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+                        >
+                          Launch Robot
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-slate-900 border-slate-700 text-slate-100">
+                        <DialogHeader>
+                          <DialogTitle>Launch Robot</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 p-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-slate-200">
+                              Select Launch Mode
+                            </Label>
+                            <Select value={selectedLaunchMode} onValueChange={setSelectedLaunchMode}>
+                              <SelectTrigger className="bg-slate-800/60 border-slate-600 text-slate-100 hover:border-blue-400/50 transition-all duration-300 h-10 text-sm">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-900 border-slate-700 backdrop-blur-sm">
+                                {launchModes.map((mode) => (
+                                  <SelectItem key={mode.value} value={mode.value} className="text-slate-100 hover:bg-slate-800 focus:bg-slate-800 text-sm py-1">
+                                    {mode.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex justify-end space-x-2">
+                            <Button 
+                              variant="outline" 
+                              onClick={() => setIsLaunchDialogOpen(false)}
+                              className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                            >
+                              Cancel
+                            </Button>
+                            <Button 
+                              onClick={handleLaunchRobot}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
 
                   {/* LED Power */}
@@ -318,69 +361,47 @@ const Index = () => {
 
                 <Separator className="bg-slate-700" />
 
-                {/* Launch Mode and Rosbag Row */}
-                <div className="grid grid-cols-1 gap-4">
-                  {/* Launch Mode */}
+                {/* Rosbag Recording */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-slate-200">
+                    Rosbag Recording
+                  </Label>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-200">
-                      Launch Mode
-                    </Label>
-                    <Select value={launchMode} onValueChange={setLaunchMode}>
-                      <SelectTrigger className="bg-slate-800/60 border-slate-600 text-slate-100 hover:border-blue-400/50 transition-all duration-300 h-10 text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-900 border-slate-700 backdrop-blur-sm">
-                        {launchModes.map((mode) => (
-                          <SelectItem key={mode.value} value={mode.value} className="text-slate-100 hover:bg-slate-800 focus:bg-slate-800 text-sm py-1">
-                            {mode.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Rosbag Recording */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-200">
-                      Rosbag Recording
-                    </Label>
-                    <div className="space-y-2">
-                      <div className="flex gap-2">
-                        <Input
-                          value={rosbagDirectory}
-                          onChange={(e) => setRosbagDirectory(e.target.value)}
-                          placeholder="Directory path"
-                          className="bg-slate-800/60 border-slate-600 text-slate-100 placeholder:text-slate-400 hover:border-blue-400/50 focus:border-blue-400 transition-all duration-300 h-10 text-sm flex-1"
-                          disabled={isRecording}
-                        />
-                        <Button 
-                          onClick={handleDirectorySelect}
-                          disabled={isRecording}
-                          size="sm"
-                          variant="outline"
-                          className="border-slate-600 text-slate-200 hover:bg-slate-800"
-                        >
-                          Browse
-                        </Button>
-                      </div>
+                    <div className="flex gap-2">
+                      <Input
+                        value={rosbagDirectory}
+                        onChange={(e) => setRosbagDirectory(e.target.value)}
+                        placeholder="Directory path"
+                        className="bg-slate-800/60 border-slate-600 text-slate-100 placeholder:text-slate-400 hover:border-blue-400/50 focus:border-blue-400 transition-all duration-300 h-10 text-sm flex-1"
+                        disabled={isRecording}
+                      />
                       <Button 
-                        onClick={handleRosbagToggle}
+                        onClick={handleDirectorySelect}
+                        disabled={isRecording}
                         size="sm"
-                        className={`w-full transition-all duration-300 ${
-                          isRecording 
-                            ? 'bg-red-600 hover:bg-red-700 text-white' 
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        }`}
+                        variant="outline"
+                        className="border-slate-600 text-slate-200 hover:bg-slate-800"
                       >
-                        {isRecording ? 'Stop Recording' : 'Start Recording'}
+                        Browse
                       </Button>
-                      {isRecording && (
-                        <div className="flex items-center space-x-2 text-red-400">
-                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                          <span className="text-xs">Recording...</span>
-                        </div>
-                      )}
                     </div>
+                    <Button 
+                      onClick={handleRosbagToggle}
+                      size="sm"
+                      className={`w-full transition-all duration-300 ${
+                        isRecording 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      {isRecording ? 'Stop Recording' : 'Start Recording'}
+                    </Button>
+                    {isRecording && (
+                      <div className="flex items-center space-x-2 text-red-400">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        <span className="text-xs">Recording...</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
