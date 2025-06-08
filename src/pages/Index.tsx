@@ -36,6 +36,11 @@ const Index = () => {
   const [isPositionDialogOpen, setIsPositionDialogOpen] = useState(false);
   const [positionInput, setPositionInput] = useState('');
 
+  // New state for Control Release functionality
+  const [isControlReleaseDialogOpen, setIsControlReleaseDialogOpen] = useState(false);
+  const [controlReleaseAction, setControlReleaseAction] = useState('');
+  const [selectedCircle, setSelectedCircle] = useState<number | null>(null);
+
   const modes = [
     { value: '0', label: 'Core Position' },
     { value: '1', label: 'Vertex Direction for Core' },
@@ -146,6 +151,40 @@ const Index = () => {
     setSelectedPosition(positionInput);
     setPosition(positionInput);
     setIsPositionDialogOpen(false);
+  };
+
+  // New handlers for Control Release functionality
+  const handleControlReleaseAction = (action: string) => {
+    setControlReleaseAction(action);
+    if (action === 'open') {
+      setSelectedCircle(null); // Reset circle selection when switching to open
+    } else {
+      // For close and power off all, execute immediately
+      handleControlReleaseExecute(action);
+    }
+  };
+
+  const handleCircleSelect = (circleIndex: number) => {
+    setSelectedCircle(circleIndex);
+  };
+
+  const handleControlReleaseExecute = (action?: string) => {
+    const actionToExecute = action || controlReleaseAction;
+    
+    if (actionToExecute === 'open' && selectedCircle !== null) {
+      console.log(`Executing Control Release: Open circle ${selectedCircle}`);
+      setIsControlReleaseDialogOpen(false);
+      setControlReleaseAction('');
+      setSelectedCircle(null);
+    } else if (actionToExecute === 'close') {
+      console.log('Executing Control Release: Close all');
+      setIsControlReleaseDialogOpen(false);
+      setControlReleaseAction('');
+    } else if (actionToExecute === 'power off all') {
+      console.log('Executing Control Release: Power off all');
+      setIsControlReleaseDialogOpen(false);
+      setControlReleaseAction('');
+    }
   };
 
   const requiresPosition = selectedMode === '0' || selectedMode === '2';
@@ -507,6 +546,90 @@ const Index = () => {
                 </div>
 
                 <Separator className="bg-slate-700" />
+
+                {/* Control Release Button */}
+                <Dialog open={isControlReleaseDialogOpen} onOpenChange={setIsControlReleaseDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="outline"
+                      className="w-full text-sm py-3 border-slate-600 text-slate-200 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
+                    >
+                      Control Release
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-slate-900 border-slate-700 text-slate-100">
+                    <DialogHeader>
+                      <DialogTitle>Control Release Options</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 p-4">
+                      {/* Action Selection */}
+                      <div className="space-y-3">
+                        <Label className="text-sm font-medium text-slate-200">
+                          Select Action
+                        </Label>
+                        <div className="grid grid-cols-1 gap-2">
+                          <Button
+                            variant={controlReleaseAction === 'open' ? 'default' : 'outline'}
+                            onClick={() => handleControlReleaseAction('open')}
+                            className={controlReleaseAction === 'open' 
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                              : 'border-slate-600 text-slate-200 hover:bg-slate-800'
+                            }
+                          >
+                            Open
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => handleControlReleaseAction('close')}
+                            className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                          >
+                            Close
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => handleControlReleaseAction('power off all')}
+                            className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                          >
+                            Power Off All
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Circle Selection for Open Action */}
+                      {controlReleaseAction === 'open' && (
+                        <div className="space-y-3">
+                          <Label className="text-sm font-medium text-slate-200">
+                            Select Circle (0-5)
+                          </Label>
+                          <div className="grid grid-cols-3 gap-3">
+                            {Array.from({ length: 6 }, (_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => handleCircleSelect(i)}
+                                className={`w-16 h-16 rounded-full border-2 flex items-center justify-center text-lg font-medium transition-all duration-200 ${
+                                  selectedCircle === i
+                                    ? 'bg-blue-500 border-blue-400 text-white'
+                                    : 'bg-slate-800 border-slate-600 text-slate-300 hover:border-blue-400 hover:bg-slate-700'
+                                }`}
+                              >
+                                {i}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex justify-end">
+                            <Button 
+                              onClick={() => handleControlReleaseExecute()}
+                              disabled={selectedCircle === null}
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
+                            >
+                              Execute Open
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 {/* Open Logs Button */}
                 <Button 
