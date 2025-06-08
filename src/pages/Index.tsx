@@ -29,6 +29,13 @@ const Index = () => {
   const [rosbagDirectory, setRosbagDirectory] = useState('/home/user/rosbags');
   const [launchMode, setLaunchMode] = useState('Launch-All');
 
+  // New state for vertex and position selection
+  const [selectedVertices, setSelectedVertices] = useState<number[]>([]);
+  const [selectedPosition, setSelectedPosition] = useState('');
+  const [isVertexDialogOpen, setIsVertexDialogOpen] = useState(false);
+  const [isPositionDialogOpen, setIsPositionDialogOpen] = useState(false);
+  const [positionInput, setPositionInput] = useState('');
+
   const modes = [
     { value: '0', label: 'Core Position' },
     { value: '1', label: 'Vertex Direction for Core' },
@@ -119,11 +126,33 @@ const Index = () => {
     console.log('Opening logs...');
   };
 
+  // New handlers for vertex and position selection
+  const handleVertexSelect = (vertexIndex: number) => {
+    if (selectedVertices.includes(vertexIndex)) {
+      setSelectedVertices(selectedVertices.filter(v => v !== vertexIndex));
+    } else if (selectedVertices.length < 3) {
+      setSelectedVertices([...selectedVertices, vertexIndex]);
+    }
+  };
+
+  const handleVertexConfirm = () => {
+    if (selectedVertices.length >= 2) {
+      setVertexInput(selectedVertices.join(' '));
+      setIsVertexDialogOpen(false);
+    }
+  };
+
+  const handlePositionConfirm = () => {
+    setSelectedPosition(positionInput);
+    setPosition(positionInput);
+    setIsPositionDialogOpen(false);
+  };
+
   const requiresPosition = selectedMode === '0' || selectedMode === '2';
   const requiresVertex = selectedMode === '1' || selectedMode === '3';
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 text-slate-100 relative overflow-hidden">
       {/* Corner Logos */}
       <div className="absolute top-6 left-6 z-20">
         <img 
@@ -152,24 +181,24 @@ const Index = () => {
             />
           </div>
           
-          <p className="text-xl text-gray-200 font-light drop-shadow-lg">
+          <p className="text-xl text-slate-300 font-light">
             Lunar Exploration Mission Control Interface
           </p>
         </div>
 
         {/* Connection Status */}
         <div className="flex justify-center mb-8">
-          <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl px-8 py-4 hover:bg-black/50 transition-all duration-300">
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-700 rounded-lg px-8 py-4 hover:bg-slate-900/80 transition-all duration-300">
             <div className="flex items-center justify-center space-x-4">
               <div className={`status-indicator ${connectionColor === 'text-green-400' ? 'bg-green-400' : connectionColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
-              <span className={`text-lg font-medium ${connectionColor} drop-shadow-lg`}>
+              <span className={`text-lg font-medium ${connectionColor}`}>
                 {connectionStatus}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Main Layout - Expanded to use more horizontal space */}
+        {/* Main Layout */}
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 max-w-[1600px] mx-auto">
           {/* Robot Model Section - Takes 3/4 of the space on larger screens */}
           <div className="xl:col-span-3">
@@ -178,9 +207,9 @@ const Index = () => {
 
           {/* Mission Control Panel - Takes 1/4 of the space on larger screens */}
           <div className="xl:col-span-1">
-            <Card className="bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-black/40 transition-all duration-500 h-fit">
+            <Card className="bg-slate-900/50 backdrop-blur-sm border border-slate-700 shadow-2xl h-fit">
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl text-center text-white drop-shadow-lg">
+                <CardTitle className="text-xl text-center text-slate-100">
                   Mission Control Panel
                 </CardTitle>
               </CardHeader>
@@ -189,7 +218,7 @@ const Index = () => {
                 <div className="grid grid-cols-2 gap-3">
                   {/* Robot Power */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-100">
+                    <Label className="text-sm font-medium text-slate-200">
                       Robot Power
                     </Label>
                     <div className="flex items-center space-x-2">
@@ -198,7 +227,7 @@ const Index = () => {
                         onCheckedChange={handlePowerToggle}
                         className="data-[state=checked]:bg-green-500"
                       />
-                      <span className={`text-sm font-medium ${robotPower ? 'text-green-400' : 'text-gray-400'}`}>
+                      <span className={`text-sm font-medium ${robotPower ? 'text-green-400' : 'text-slate-400'}`}>
                         {robotPower ? 'ON' : 'OFF'}
                       </span>
                     </div>
@@ -206,7 +235,7 @@ const Index = () => {
 
                   {/* LED Power */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-100">
+                    <Label className="text-sm font-medium text-slate-200">
                       LED Control
                     </Label>
                     <div className="flex items-center space-x-2">
@@ -215,7 +244,7 @@ const Index = () => {
                         onCheckedChange={handleLedPowerToggle}
                         className="data-[state=checked]:bg-blue-500"
                       />
-                      <span className={`text-sm font-medium ${ledPower ? 'text-blue-400' : 'text-gray-400'}`}>
+                      <span className={`text-sm font-medium ${ledPower ? 'text-blue-400' : 'text-slate-400'}`}>
                         {ledPower ? 'ON' : 'OFF'}
                       </span>
                     </div>
@@ -225,17 +254,17 @@ const Index = () => {
                 {/* LED Animation Options - Only show when LED is ON */}
                 {ledPower && (
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-100">
+                    <Label className="text-sm font-medium text-slate-200">
                       LED Animation
                     </Label>
                     <div className="grid grid-cols-1 gap-2">
                       <Select value={selectedLED} onValueChange={setSelectedLED}>
-                        <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-10 text-sm backdrop-blur-sm">
+                        <SelectTrigger className="bg-slate-800/60 border-slate-600 text-slate-100 hover:border-blue-400/50 transition-all duration-300 h-10 text-sm">
                           <SelectValue placeholder="Select animation" />
                         </SelectTrigger>
-                        <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                        <SelectContent className="bg-slate-900 border-slate-700 backdrop-blur-sm">
                           {ledOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-sm py-1">
+                            <SelectItem key={option.value} value={option.value} className="text-slate-100 hover:bg-slate-800 focus:bg-slate-800 text-sm py-1">
                               {option.label}
                             </SelectItem>
                           ))}
@@ -245,7 +274,7 @@ const Index = () => {
                         onClick={handleLEDCommand}
                         disabled={!selectedLED}
                         size="sm"
-                        className="bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan transition-all duration-300"
+                        className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300"
                       >
                         Apply
                       </Button>
@@ -253,22 +282,22 @@ const Index = () => {
                   </div>
                 )}
 
-                <Separator className="bg-white/20" />
+                <Separator className="bg-slate-700" />
 
                 {/* Launch Mode and Rosbag Row */}
                 <div className="grid grid-cols-1 gap-4">
                   {/* Launch Mode */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-100">
+                    <Label className="text-sm font-medium text-slate-200">
                       Launch Mode
                     </Label>
                     <Select value={launchMode} onValueChange={setLaunchMode}>
-                      <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-10 text-sm backdrop-blur-sm">
+                      <SelectTrigger className="bg-slate-800/60 border-slate-600 text-slate-100 hover:border-blue-400/50 transition-all duration-300 h-10 text-sm">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                      <SelectContent className="bg-slate-900 border-slate-700 backdrop-blur-sm">
                         {launchModes.map((mode) => (
-                          <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-sm py-1">
+                          <SelectItem key={mode.value} value={mode.value} className="text-slate-100 hover:bg-slate-800 focus:bg-slate-800 text-sm py-1">
                             {mode.label}
                           </SelectItem>
                         ))}
@@ -278,7 +307,7 @@ const Index = () => {
 
                   {/* Rosbag Recording */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-100">
+                    <Label className="text-sm font-medium text-slate-200">
                       Rosbag Recording
                     </Label>
                     <div className="space-y-2">
@@ -287,7 +316,7 @@ const Index = () => {
                           value={rosbagDirectory}
                           onChange={(e) => setRosbagDirectory(e.target.value)}
                           placeholder="Directory path"
-                          className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-10 text-sm backdrop-blur-sm flex-1"
+                          className="bg-slate-800/60 border-slate-600 text-slate-100 placeholder:text-slate-400 hover:border-blue-400/50 focus:border-blue-400 transition-all duration-300 h-10 text-sm flex-1"
                           disabled={isRecording}
                         />
                         <Button 
@@ -295,7 +324,7 @@ const Index = () => {
                           disabled={isRecording}
                           size="sm"
                           variant="outline"
-                          className="border-white/30 text-white hover:bg-white/10"
+                          className="border-slate-600 text-slate-200 hover:bg-slate-800"
                         >
                           Browse
                         </Button>
@@ -305,8 +334,8 @@ const Index = () => {
                         size="sm"
                         className={`w-full transition-all duration-300 ${
                           isRecording 
-                            ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' 
-                            : 'bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan'
+                            ? 'bg-red-600 hover:bg-red-700 text-white' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
                         }`}
                       >
                         {isRecording ? 'Stop Recording' : 'Start Recording'}
@@ -321,20 +350,20 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Separator className="bg-white/20" />
+                <Separator className="bg-slate-700" />
 
                 {/* Mode Selection */}
                 <div className="space-y-2">
-                  <Label htmlFor="mode-select" className="text-sm font-medium text-gray-100">
+                  <Label htmlFor="mode-select" className="text-sm font-medium text-slate-200">
                     Operation Mode
                   </Label>
                   <Select value={selectedMode} onValueChange={setSelectedMode}>
-                    <SelectTrigger className="bg-black/40 border-white/30 text-white hover:border-space-cyan/50 transition-all duration-300 h-10 text-sm backdrop-blur-sm">
+                    <SelectTrigger className="bg-slate-800/60 border-slate-600 text-slate-100 hover:border-blue-400/50 transition-all duration-300 h-10 text-sm">
                       <SelectValue placeholder="Select operation mode" />
                     </SelectTrigger>
-                    <SelectContent className="bg-black/90 border-white/30 backdrop-blur-xl">
+                    <SelectContent className="bg-slate-900 border-slate-700 backdrop-blur-sm">
                       {modes.map((mode) => (
-                        <SelectItem key={mode.value} value={mode.value} className="text-white hover:bg-white/20 focus:bg-white/20 text-sm py-1">
+                        <SelectItem key={mode.value} value={mode.value} className="text-slate-100 hover:bg-slate-800 focus:bg-slate-800 text-sm py-1">
                           {mode.label}
                         </SelectItem>
                       ))}
@@ -342,43 +371,124 @@ const Index = () => {
                   </Select>
                 </div>
 
-                {/* Input Fields */}
-                {requiresPosition && (
+                {/* Vertex Selection for modes 1 and 3 */}
+                {requiresVertex && (
                   <div className="space-y-2">
-                    <Label htmlFor="position-input" className="text-sm font-medium text-gray-100">
-                      Position (x, y, z)
+                    <Label className="text-sm font-medium text-slate-200">
+                      Vertex Selection
                     </Label>
-                    <Input
-                      id="position-input"
-                      value={position}
-                      onChange={(e) => setPosition(e.target.value)}
-                      placeholder="e.g., 0.1 0.2 0.3"
-                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-10 text-sm backdrop-blur-sm"
-                    />
+                    <Dialog open={isVertexDialogOpen} onOpenChange={setIsVertexDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full border-slate-600 text-slate-200 hover:bg-slate-800">
+                          Select Vertices {selectedVertices.length > 0 && `(${selectedVertices.length} selected)`}
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-slate-900 border-slate-700 text-slate-100">
+                        <DialogHeader>
+                          <DialogTitle>Select Vertices (2-3 required)</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid grid-cols-6 gap-3 p-4">
+                          {Array.from({ length: 12 }, (_, i) => (
+                            <button
+                              key={i}
+                              onClick={() => handleVertexSelect(i)}
+                              className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all duration-200 ${
+                                selectedVertices.includes(i)
+                                  ? 'bg-red-500 border-red-400 text-white'
+                                  : 'bg-slate-800 border-slate-600 text-slate-300 hover:border-red-400 hover:bg-slate-700'
+                              }`}
+                              disabled={!selectedVertices.includes(i) && selectedVertices.length >= 3}
+                            >
+                              {i}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex justify-between items-center p-4 pt-0">
+                          <span className="text-sm text-slate-400">
+                            Selected: {selectedVertices.length}/3
+                          </span>
+                          <Button 
+                            onClick={handleVertexConfirm}
+                            disabled={selectedVertices.length < 2}
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            Confirm Selection
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    {vertexInput && (
+                      <div className="text-sm text-slate-400">
+                        Selected vertices: {vertexInput}
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {requiresVertex && (
+                {/* Position Selection for modes 0 and 2 */}
+                {requiresPosition && (
                   <div className="space-y-2">
-                    <Label htmlFor="vertex-input" className="text-sm font-medium text-gray-100">
-                      Vertex Indices
+                    <Label className="text-sm font-medium text-slate-200">
+                      Position Selection
                     </Label>
-                    <Input
-                      id="vertex-input"
-                      value={vertexInput}
-                      onChange={(e) => setVertexInput(e.target.value)}
-                      placeholder="e.g., 1 2 3"
-                      className="bg-black/40 border-white/30 text-white placeholder:text-gray-300 hover:border-space-cyan/50 focus:border-space-cyan transition-all duration-300 h-10 text-sm backdrop-blur-sm"
-                    />
+                    <Dialog open={isPositionDialogOpen} onOpenChange={setIsPositionDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full border-slate-600 text-slate-200 hover:bg-slate-800">
+                          Select Position {selectedPosition && '(Set)'}
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-slate-900 border-slate-700 text-slate-100">
+                        <DialogHeader>
+                          <DialogTitle>Enter Position Coordinates</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 p-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm text-slate-200">
+                              Coordinates (x,y,z)
+                            </Label>
+                            <Input
+                              value={positionInput}
+                              onChange={(e) => setPositionInput(e.target.value)}
+                              placeholder="e.g., 1,2,3"
+                              className="bg-slate-800/60 border-slate-600 text-slate-100 placeholder:text-slate-400"
+                            />
+                            <p className="text-xs text-slate-400">
+                              Enter coordinates separated by commas
+                            </p>
+                          </div>
+                          <div className="flex justify-end space-x-2">
+                            <Button 
+                              variant="outline" 
+                              onClick={() => setIsPositionDialogOpen(false)}
+                              className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                            >
+                              Cancel
+                            </Button>
+                            <Button 
+                              onClick={handlePositionConfirm}
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
+                              disabled={!positionInput.trim()}
+                            >
+                              Confirm
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    {selectedPosition && (
+                      <div className="text-sm text-slate-400">
+                        Position: {selectedPosition}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Amount Slider */}
                 <div className="space-y-2">
-                  <Label htmlFor="amount-slider" className="text-sm font-medium text-gray-100">
+                  <Label htmlFor="amount-slider" className="text-sm font-medium text-slate-200">
                     Amount: {amount[0].toFixed(1)}
                   </Label>
-                  <div className="px-3 py-3 bg-black/20 rounded-xl border border-space-cyan/30 hover:border-space-cyan/50 transition-all duration-300">
+                  <div className="px-3 py-3 bg-slate-800/30 rounded-lg border border-slate-700 hover:border-slate-600 transition-all duration-300">
                     <Slider
                       id="amount-slider"
                       value={amount}
@@ -386,9 +496,9 @@ const Index = () => {
                       max={1.0}
                       min={0.0}
                       step={0.1}
-                      className="w-full [&_.slider-track]:bg-space-cyan/20 [&_.slider-range]:bg-space-cyan [&_.slider-thumb]:bg-space-cyan [&_.slider-thumb]:border-space-cyan"
+                      className="w-full"
                     />
-                    <div className="flex justify-between text-xs text-space-cyan mt-1">
+                    <div className="flex justify-between text-xs text-slate-400 mt-1">
                       <span>0.0</span>
                       <span>0.5</span>
                       <span>1.0</span>
@@ -396,13 +506,13 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Separator className="bg-white/20" />
+                <Separator className="bg-slate-700" />
 
                 {/* Open Logs Button */}
                 <Button 
                   onClick={handleOpenLogs}
                   variant="outline"
-                  className="w-full text-sm py-3 border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+                  className="w-full text-sm py-3 border-slate-600 text-slate-200 hover:bg-slate-800 hover:border-slate-500 transition-all duration-300"
                 >
                   Open Logs
                 </Button>
@@ -410,16 +520,16 @@ const Index = () => {
                 {/* Execute Button */}
                 <Button 
                   onClick={handleSendGoal}
-                  className="w-full text-sm py-4 bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-space-cyan/50"
+                  className="w-full text-sm py-4 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-500 transform hover:scale-105 shadow-lg"
                 >
                   Execute Mission Command
                 </Button>
 
                 {/* Status Display */}
-                <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-xl p-3 hover:bg-black/50 transition-all duration-300">
+                <div className="bg-slate-800/40 backdrop-blur-sm border border-slate-700 rounded-lg p-3 hover:bg-slate-800/60 transition-all duration-300">
                   <div className="flex items-center justify-center space-x-3">
-                    <div className={`status-indicator ${goalColor === 'text-green-400' ? 'bg-green-400' : goalColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-gray-400'}`}></div>
-                    <span className={`font-medium text-sm ${goalColor} drop-shadow-lg`}>
+                    <div className={`status-indicator ${goalColor === 'text-green-400' ? 'bg-green-400' : goalColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-slate-400'}`}></div>
+                    <span className={`font-medium text-sm ${goalColor}`}>
                       {goalStatus}
                     </span>
                   </div>
@@ -430,8 +540,8 @@ const Index = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center text-gray-300 text-lg pt-8 mt-12">
-          <p className="drop-shadow-lg">© Serenity Robotics | The Most Significant Spherical Robot</p>
+        <div className="text-center text-slate-400 text-lg pt-8 mt-12">
+          <p>© Serenity Robotics | The Most Significant Spherical Robot</p>
         </div>
       </div>
     </div>
