@@ -53,8 +53,7 @@ const Index = () => {
   const ledOptions = [
     { value: 'chaser-1', label: 'Chaser-1-Animation' },
     { value: 'chaser-2', label: 'Chaser-2-Animation' },
-    { value: 'startup', label: 'Startup-Animation' },
-    { value: 'stop', label: 'Stop' }
+    { value: 'startup', label: 'Startup-Animation' }
   ];
 
   const launchModes = [
