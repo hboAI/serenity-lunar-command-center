@@ -5,7 +5,7 @@ const Index = () => {
   return <div className="min-h-screen relative overflow-hidden">
       {/* Corner Logos */}
       <div className="absolute top-6 left-6 z-20">
-        <img src="/lovable-uploads/66b1167b-bb43-4ffc-9b2c-db26285e5756.png" alt="Serenity Logo" className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300" />
+        <img alt="Serenity Logo" src="/lovable-uploads/5bdfc386-c196-4f88-9303-fe4a0ce7c808.png" className="h-16 opacity-70 hover:opacity-100 transition-opacity duration-300 object-contain" />
       </div>
       
       <div className="absolute top-6 right-6 z-20">
