@@ -151,9 +151,7 @@ const MissionControlPanel = () => {
               </SelectContent>
             </Select>
             
-            <div className="text-sm text-blue-300 bg-black/20 p-2 rounded border border-white/20">
-              Selected: {getSelectedModeLabel()}
-            </div>
+            
           </div>
         </div>
 
