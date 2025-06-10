@@ -1,198 +1,167 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Slider } from '@/components/ui/slider';
-import { RefreshCcw, X } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Play, Square, RotateCcw, Zap, Thermometer, Gauge, MapPin } from 'lucide-react';
+
 const MissionControlPanel = () => {
-  const [connectionStatus, setConnectionStatus] = useState('Connecting to robot...');
-  const [connectionColor, setConnectionColor] = useState('text-yellow-400');
-  const [goalStatus, setGoalStatus] = useState('Status: Idle');
-  const [goalColor, setGoalColor] = useState('text-gray-400');
-  const [selectedMode, setSelectedMode] = useState('0.1');
   const [motorIds, setMotorIds] = useState('');
   const [motorGoals, setMotorGoals] = useState('');
-  const [position, setPosition] = useState('');
-  const [vertexInput, setVertexInput] = useState('');
-  const [amount, setAmount] = useState([0.5]);
-  const modes = [{
-    value: '0.1',
-    label: 'Direct Motor Control: Position'
-  }, {
-    value: '0.2',
-    label: 'Direct Motor Control: Current'
-  }, {
-    value: '1.1',
-    label: 'Core Position: Coordinates'
-  }, {
-    value: '1.2',
-    label: 'Core Position: Vertex Direction'
-  }, {
-    value: '1.3',
-    label: 'Core Position: Inverted Vertex Direction'
-  }, {
-    value: '2.1',
-    label: 'Goal Position: Coordinates'
-  }, {
-    value: '2.2',
-    label: 'Goal Position: Vertex Direction'
-  }, {
-    value: '3',
-    label: 'Visual Target Mode'
-  }, {
-    value: '4',
-    label: 'Cave Mode'
-  }];
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setConnectionStatus('Connected to robot on localhost');
-      setConnectionColor('text-green-400');
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-  const handleSendGoal = () => {
-    setGoalStatus('Status: Sending command...');
-    setGoalColor('text-yellow-400');
-    const modeValue = selectedMode;
-    const [category, subMode] = modeValue.includes('.') ? modeValue.split('.').map(Number) : [parseInt(modeValue, 10), 0];
-    console.log(`Executing mode: category=${category}, subMode=${subMode}`);
-    if (category === 0) {
-      const controlMode = subMode === 1 ? 5 : 0;
-      console.log(`Motor control mode: ${controlMode}, IDs: ${motorIds}, Goals: ${motorGoals}`);
-    } else {
-      const robotMode = category === 1 ? 0 : category === 2 ? 1 : category - 1;
-      console.log(`Robot task mode: ${robotMode}, amount: ${amount[0]}`);
-      if (subMode === 1) {
-        console.log(`Coordinates: ${position}`);
-      } else if (subMode === 2 || subMode === 3) {
-        console.log(`Vertices: ${vertexInput}, inverted: ${subMode === 3}`);
-      }
-    }
-    setTimeout(() => {
-      setGoalStatus('Status: Command sent. Awaiting result...');
-      setGoalColor('text-green-400');
-    }, 1500);
-  };
-  const handleReload = () => {
-    setGoalStatus('Status: Reloading robot...');
-    setGoalColor('text-yellow-400');
-    console.log('Reload robot command triggered');
-    setTimeout(() => {
-      setGoalStatus('Status: Robot reloaded successfully');
-      setGoalColor('text-green-400');
-    }, 3000);
-  };
-  const handleCancel = () => {
-    setGoalStatus('Status: Canceling command...');
-    setGoalColor('text-yellow-400');
-    console.log('Cancel command triggered');
-    setTimeout(() => {
-      setGoalStatus('Status: Command canceled');
-      setGoalColor('text-gray-400');
-    }, 1000);
-  };
-  const isMotorMode = selectedMode.startsWith('0.');
-  const isCoordMode = selectedMode === '1.1' || selectedMode === '2.1';
-  const isVertexMode = selectedMode === '1.2' || selectedMode === '1.3' || selectedMode === '2.2';
-  return <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl">
+  const [selectedMode, setSelectedMode] = useState('autonomous');
+
+  return (
+    <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20">
       <CardHeader className="pb-4">
-        <CardTitle className="text-center text-white drop-shadow-lg text-5xl py-[9px]">Lunar Mission Control</CardTitle>
-        <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-lg p-3 py-[14px]">
-          <div className="flex items-center justify-center space-x-3">
-            <div className={`status-indicator ${connectionColor === 'text-green-400' ? 'bg-green-400' : connectionColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
-            <span className={`text-sm font-medium ${connectionColor} drop-shadow-lg`}>
-              {connectionStatus}
-            </span>
-          </div>
-        </div>
+        <CardTitle className="text-white text-2xl text-center font-bold">
+          Lunar Mission Control
+        </CardTitle>
       </CardHeader>
       
-      <CardContent className="space-y-4 text-sm py-0">
-        {/* Mode Selection */}
-        <div className="space-y-2 py-[21px]">
-          <Label htmlFor="mode-select" className="text-sm font-medium text-gray-100">
-            Operation Mode
-          </Label>
-          <Select value={selectedMode} onValueChange={setSelectedMode}>
-            <SelectTrigger className="bg-black/40 border-white/30 text-white h-10 text-sm">
-              <SelectValue placeholder="Select mode" />
-            </SelectTrigger>
-            <SelectContent className="bg-black/90 border-white/30">
-              {modes.map(mode => <SelectItem key={mode.value} value={mode.value} className="text-white text-xs py-2">
-                  {mode.label}
-                </SelectItem>)}
-            </SelectContent>
-          </Select>
-          
-        </div>
-
-        <Separator className="bg-white/20" />
-
-        {/* Motor Control Inputs */}
-        {isMotorMode && <div className="space-y-3 py-[14px]">
-            <Label className="text-sm text-gray-100">Motor IDs</Label>
-            <Input value={motorIds} onChange={e => setMotorIds(e.target.value)} placeholder="e.g., 0 1 2" className="bg-black/40 border-white/30 text-white h-8 text-sm" />
-            <Label className="text-sm text-gray-100">Motor Goals</Label>
-            <Input value={motorGoals} onChange={e => setMotorGoals(e.target.value)} placeholder="e.g., 100 200 300" className="bg-black/40 border-white/30 text-white h-8 text-sm" />
-          </div>}
-
-        {/* Position Inputs */}
-        {isCoordMode && <div className="space-y-2">
-            <Label className="text-sm text-gray-100">Position (x, y, z)</Label>
-            <Input value={position} onChange={e => setPosition(e.target.value)} placeholder="e.g., 0.1 0.2 0.3" className="bg-black/40 border-white/30 text-white h-8 text-sm" />
-          </div>}
-
-        {/* Vertex Inputs */}
-        {isVertexMode && <div className="space-y-2">
-            <Label className="text-sm text-gray-100">Vertex Indices</Label>
-            <Input value={vertexInput} onChange={e => setVertexInput(e.target.value)} placeholder="e.g., 1 2 3" className="bg-black/40 border-white/30 text-white h-8 text-sm" />
-          </div>}
-
-        {/* Amount Slider */}
-        <div className="space-y-2 py-[15px]">
-          <Label className="text-sm text-gray-100">
-            Amount: {amount[0].toFixed(1)}
-          </Label>
-          <div className="px-2 py-3 bg-black/20 rounded-lg border border-space-cyan/30">
-            <Slider value={amount} onValueChange={setAmount} max={1.0} min={0.0} step={0.1} className="w-full" />
+      <CardContent className="space-y-6 text-white">
+        {/* System Status */}
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Zap className="w-5 h-5 text-space-cyan" />
+            System Status
+          </h3>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="flex items-center justify-between">
+              <span>Power:</span>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>92%</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Temp:</span>
+              <div className="flex items-center gap-1">
+                <Thermometer className="w-3 h-3" />
+                <span>-15°C</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Signal:</span>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>Strong</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Mode:</span>
+              <span className="text-space-cyan font-medium">Active</span>
+            </div>
           </div>
         </div>
 
         <Separator className="bg-white/20" />
 
-        {/* Control Buttons */}
-        <div className="space-y-2">
-          <Button onClick={handleSendGoal} className="w-full text-sm bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan py-[23px]">
-            Execute Command
-          </Button>
+        {/* Mission Controls */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-space-cyan" />
+            Mission Controls
+          </h3>
           
-          <div className="grid grid-cols-2 gap-2">
-            <Button onClick={handleReload} variant="outline" className="text-xs py-2 bg-black/20 border-green-500/50 text-green-400 hover:bg-green-500/20">
-              <RefreshCcw className="mr-1 h-3 w-3" />
-              Reload
+          <div className="space-y-3">
+            <Label htmlFor="mode-selection" className="text-base font-medium">Operation Mode</Label>
+            <RadioGroup value={selectedMode} onValueChange={setSelectedMode} className="grid grid-cols-1 gap-2">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="autonomous" id="autonomous" className="border-space-cyan text-space-cyan" />
+                <Label htmlFor="autonomous" className="text-sm cursor-pointer">Autonomous Navigation</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="manual" id="manual" className="border-space-cyan text-space-cyan" />
+                <Label htmlFor="manual" className="text-sm cursor-pointer">Manual Control</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="standby" id="standby" className="border-space-cyan text-space-cyan" />
+                <Label htmlFor="standby" className="text-sm cursor-pointer">Standby Mode</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        </div>
+
+        <Separator className="bg-white/20" />
+
+        {/* Motor Controls */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Gauge className="w-5 h-5 text-space-cyan" />
+            Motor Controls
+          </h3>
+          
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="motor-ids" className="text-sm font-medium">Motor IDs</Label>
+              <Input
+                id="motor-ids"
+                value={motorIds}
+                onChange={(e) => setMotorIds(e.target.value)}
+                placeholder="e.g., 1,2,3"
+                className="mt-1 bg-black/40 border-white/30 text-white placeholder:text-blue-300/60 focus:border-space-cyan focus:ring-space-cyan"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="motor-goals" className="text-sm font-medium">Motor Goals</Label>
+              <Input
+                id="motor-goals"
+                value={motorGoals}
+                onChange={(e) => setMotorGoals(e.target.value)}
+                placeholder="e.g., 1000,1500,2000"
+                className="mt-1 bg-black/40 border-white/30 text-white placeholder:text-blue-300/60 focus:border-space-cyan focus:ring-space-cyan"
+              />
+            </div>
+          </div>
+        </div>
+
+        <Separator className="bg-white/20" />
+
+        {/* Mission Progress */}
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold">Mission Progress</h3>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Overall Progress</span>
+              <span>67%</span>
+            </div>
+            <Progress value={67} className="h-2" />
+          </div>
+          <div className="text-xs text-gray-300">
+            Current Phase: Surface Exploration
+          </div>
+        </div>
+
+        <Separator className="bg-white/20" />
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold">Actions</h3>
+          <div className="grid grid-cols-1 gap-3">
+            <Button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium py-2">
+              <Play className="w-4 h-4 mr-2" />
+              Start Mission
             </Button>
             
-            <Button onClick={handleCancel} variant="outline" className="text-xs py-2 bg-black/20 border-red-500/50 text-red-400 hover:bg-red-500/20">
-              <X className="mr-1 h-3 w-3" />
-              Cancel
+            <Button variant="outline" className="w-full border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black font-medium py-2">
+              <Square className="w-4 h-4 mr-2" />
+              Pause Mission
             </Button>
-          </div>
-        </div>
-
-        {/* Status Display */}
-        <div className="bg-black/40 border border-white/20 rounded-lg p-3">
-          <div className="flex items-center justify-center space-x-3">
-            <div className={`status-indicator ${goalColor === 'text-green-400' ? 'bg-green-400' : goalColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-gray-400'}`}></div>
-            <span className={`font-medium text-xs ${goalColor} drop-shadow-lg`}>
-              {goalStatus}
-            </span>
+            
+            <Button variant="outline" className="w-full border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-medium py-2">
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Emergency Stop
+            </Button>
           </div>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
+
 export default MissionControlPanel;
