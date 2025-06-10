@@ -48,6 +48,29 @@ const Index = () => {
     setGoalStatus('Status: Sending command...');
     setGoalColor('text-yellow-400');
     
+    // Parse mode value to match Python structure
+    const modeValue = selectedMode;
+    const [category, subMode] = modeValue.includes('.') ? 
+      modeValue.split('.').map(Number) : [parseInt(modeValue, 10), 0];
+
+    console.log(`Executing mode: category=${category}, subMode=${subMode}`);
+
+    if (category === 0) {
+      // Direct Motor Control - fix mapping to match Python
+      const controlMode = subMode === 1 ? 5 : 0; // Position: 5, Current: 0 (not 4 as in comment)
+      console.log(`Motor control mode: ${controlMode}, IDs: ${motorIds}, Goals: ${motorGoals}`);
+    } else {
+      // SetRobotTask modes
+      const robotMode = category === 1 ? 0 : category === 2 ? 1 : (category - 1);
+      console.log(`Robot task mode: ${robotMode}, amount: ${amount[0]}`);
+      
+      if (subMode === 1) {
+        console.log(`Coordinates: ${position}`);
+      } else if (subMode === 2 || subMode === 3) {
+        console.log(`Vertices: ${vertexInput}, inverted: ${subMode === 3}`);
+      }
+    }
+    
     // Simulate goal processing
     setTimeout(() => {
       setGoalStatus('Status: Command sent. Awaiting result...');
@@ -59,6 +82,9 @@ const Index = () => {
     setGoalStatus('Status: Reloading robot...');
     setGoalColor('text-yellow-400');
     
+    console.log('Reload robot command triggered');
+    // TODO: Implement ROS service call for robot reload
+    
     // Simulate reload process
     setTimeout(() => {
       setGoalStatus('Status: Robot reloaded successfully');
@@ -69,6 +95,9 @@ const Index = () => {
   const handleCancel = () => {
     setGoalStatus('Status: Canceling command...');
     setGoalColor('text-yellow-400');
+    
+    console.log('Cancel command triggered');
+    // TODO: Implement ROS action goal cancellation
     
     // Simulate cancel process
     setTimeout(() => {
