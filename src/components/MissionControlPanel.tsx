@@ -104,7 +104,7 @@ const MissionControlPanel = () => {
   } = updateControlVisibility();
   return <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20">
       <CardHeader className="pb-4">
-        <CardTitle className="text-white text-2xl text-center font-bold">
+        <CardTitle className="text-white text-center font-bold text-4xl">
           Lunar Mission Control
         </CardTitle>
       </CardHeader>

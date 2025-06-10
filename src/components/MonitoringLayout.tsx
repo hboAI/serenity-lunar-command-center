@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,54 +6,44 @@ import TopicSelector from './TopicSelector';
 import PlotVisualization from './PlotVisualization';
 import ImageVisualization from './ImageVisualization';
 import PointCloudVisualization from './PointCloudVisualization';
-
 interface MonitoringLayoutProps {
   children: React.ReactNode; // Mission Control Panel
 }
-
-const MonitoringLayout = ({ children }: MonitoringLayoutProps) => {
+const MonitoringLayout = ({
+  children
+}: MonitoringLayoutProps) => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState('plots');
-
-  const availableTopics = [
-    {
-      name: '/motor_status',
-      type: 'plot',
-      description: 'Motor positions, currents, velocities'
-    },
-    {
-      name: '/lux',
-      type: 'plot',
-      description: 'Environmental sensors'
-    },
-    {
-      name: '/sen66_data',
-      type: 'plot',
-      description: 'Air quality sensors'
-    },
-    {
-      name: '/camera/cam*/ir',
-      type: 'image',
-      description: 'IR camera feeds (4 cameras)'
-    },
-    {
-      name: '/camera/cam*/pointcloud',
-      type: 'pointcloud',
-      description: 'Point cloud data (4 cameras)'
-    }
-  ];
-
+  const availableTopics = [{
+    name: '/motor_status',
+    type: 'plot',
+    description: 'Motor positions, currents, velocities'
+  }, {
+    name: '/lux',
+    type: 'plot',
+    description: 'Environmental sensors'
+  }, {
+    name: '/sen66_data',
+    type: 'plot',
+    description: 'Air quality sensors'
+  }, {
+    name: '/camera/cam*/ir',
+    type: 'image',
+    description: 'IR camera feeds (4 cameras)'
+  }, {
+    name: '/camera/cam*/pointcloud',
+    type: 'pointcloud',
+    description: 'Point cloud data (4 cameras)'
+  }];
   const plotTopics = availableTopics.filter(topic => topic.type === 'plot');
-
-  return (
-    <div className="min-h-screen w-full flex">
+  return <div className="min-h-screen w-full flex">
       <ResizablePanelGroup direction="horizontal" className="min-h-screen">
         {/* Monitoring Center */}
         <ResizablePanel defaultSize={75} minSize={50}>
           <div className="h-full p-4 py-[33px] px-[35px]">
             <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20">
               <CardHeader className="pb-4">
-                <CardTitle className="text-white text-5xl px-0 text-center">Monitoring Center</CardTitle>
+                <CardTitle className="text-white px-0 text-center text-5xl">Monitoring Center</CardTitle>
               </CardHeader>
               <CardContent className="h-[calc(100%-120px)]">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
@@ -72,16 +61,9 @@ const MonitoringLayout = ({ children }: MonitoringLayoutProps) => {
                   
                   <TabsContent value="plots" className="h-[calc(100%-60px)] mt-4">
                     <div className="h-full flex flex-col">
-                      <TopicSelector 
-                        topics={availableTopics} 
-                        selectedTopics={selectedTopics} 
-                        onTopicsChange={setSelectedTopics} 
-                      />
+                      <TopicSelector topics={availableTopics} selectedTopics={selectedTopics} onTopicsChange={setSelectedTopics} />
                       <div className="flex-1">
-                        <PlotVisualization 
-                          topics={plotTopics} 
-                          selectedTopics={selectedTopics.filter(topic => plotTopics.some(pt => pt.name === topic))} 
-                        />
+                        <PlotVisualization topics={plotTopics} selectedTopics={selectedTopics.filter(topic => plotTopics.some(pt => pt.name === topic))} />
                       </div>
                     </div>
                   </TabsContent>
@@ -108,8 +90,6 @@ const MonitoringLayout = ({ children }: MonitoringLayoutProps) => {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-    </div>
-  );
+    </div>;
 };
-
 export default MonitoringLayout;

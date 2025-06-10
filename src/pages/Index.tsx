@@ -21,7 +21,7 @@ const Index = () => {
 
       {/* Footer */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20">
-        <p className="text-gray-300 drop-shadow-lg text-center py-0 text-lg">
+        <p className="text-gray-300 drop-shadow-lg text-center py-[22px] text-xl">
           © Serenity Robotics | The Most Significant Spherical Robot
         </p>
       </div>
