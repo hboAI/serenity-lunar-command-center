@@ -45,13 +45,13 @@ const MonitoringLayout = ({
           <div className="h-full p-4 py-[33px] px-[35px]">
             <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20">
               <CardHeader className="pb-4">
-                <CardTitle className="text-white text-5xl px-0">Monitoring Center</CardTitle>
+                <CardTitle className="text-white text-5xl px-0 text-center">Monitoring Center</CardTitle>
                 <TopicSelector topics={availableTopics} selectedTopics={selectedTopics} onTopicsChange={setSelectedTopics} />
               </CardHeader>
               <CardContent className="h-[calc(100%-120px)]">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
                   <TabsList className="grid w-full grid-cols-3 bg-black/40">
-                    <TabsTrigger value="plots" className="data-[state=active]:bg-space-cyan text-slate-200">
+                    <TabsTrigger value="plots" className="data-[state=active]:bg-space-cyan text-slate-200 py-[6px]">
                       Data Plots
                     </TabsTrigger>
                     <TabsTrigger value="images" className="data-[state=active]:bg-space-cyan text-slate-200">
