@@ -42,7 +42,7 @@ const MonitoringLayout = ({
       <ResizablePanelGroup direction="horizontal" className="min-h-screen">
         {/* Monitoring Center */}
         <ResizablePanel defaultSize={75} minSize={50}>
-          <div className="h-full p-4">
+          <div className="h-full p-4 py-[33px] px-[35px]">
             <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white text-5xl px-0">Monitoring Center</CardTitle>
@@ -51,13 +51,13 @@ const MonitoringLayout = ({
               <CardContent className="h-[calc(100%-120px)]">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
                   <TabsList className="grid w-full grid-cols-3 bg-black/40">
-                    <TabsTrigger value="plots" className="text-white data-[state=active]:bg-space-cyan">
+                    <TabsTrigger value="plots" className="data-[state=active]:bg-space-cyan text-slate-200">
                       Data Plots
                     </TabsTrigger>
-                    <TabsTrigger value="images" className="text-white data-[state=active]:bg-space-cyan">
+                    <TabsTrigger value="images" className="data-[state=active]:bg-space-cyan text-slate-200">
                       IR Images
                     </TabsTrigger>
-                    <TabsTrigger value="pointclouds" className="text-white data-[state=active]:bg-space-cyan">
+                    <TabsTrigger value="pointclouds" className="data-[state=active]:bg-space-cyan text-slate-200">
                       Point Clouds
                     </TabsTrigger>
                   </TabsList>
@@ -83,7 +83,7 @@ const MonitoringLayout = ({
 
         {/* Mission Control Panel */}
         <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
-          <div className="h-full p-4">
+          <div className="h-full p-4 py-[33px]">
             {children}
           </div>
         </ResizablePanel>

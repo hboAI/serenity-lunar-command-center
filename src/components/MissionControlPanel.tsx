@@ -100,8 +100,8 @@ const MissionControlPanel = () => {
   const isVertexMode = selectedMode === '1.2' || selectedMode === '1.3' || selectedMode === '2.2';
   return <Card className="h-full bg-black/30 backdrop-blur-xl border border-white/20 shadow-2xl">
       <CardHeader className="pb-4">
-        <CardTitle className="text-center text-white drop-shadow-lg text-4xl">Lunar Mission Control</CardTitle>
-        <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-lg p-3">
+        <CardTitle className="text-center text-white drop-shadow-lg text-5xl py-[9px]">Lunar Mission Control</CardTitle>
+        <div className="bg-black/40 backdrop-blur-md border border-white/20 rounded-lg p-3 py-[14px]">
           <div className="flex items-center justify-center space-x-3">
             <div className={`status-indicator ${connectionColor === 'text-green-400' ? 'bg-green-400' : connectionColor === 'text-yellow-400' ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
             <span className={`text-sm font-medium ${connectionColor} drop-shadow-lg`}>
@@ -111,9 +111,9 @@ const MissionControlPanel = () => {
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4 text-sm">
+      <CardContent className="space-y-4 text-sm py-0">
         {/* Mode Selection */}
-        <div className="space-y-2">
+        <div className="space-y-2 py-[21px]">
           <Label htmlFor="mode-select" className="text-sm font-medium text-gray-100">
             Operation Mode
           </Label>
@@ -127,15 +127,13 @@ const MissionControlPanel = () => {
                 </SelectItem>)}
             </SelectContent>
           </Select>
-          <Badge variant="outline" className="text-space-cyan border-space-cyan/50 bg-space-cyan/10 text-xs px-2 py-1">
-            {modes.find(m => m.value === selectedMode)?.label}
-          </Badge>
+          
         </div>
 
         <Separator className="bg-white/20" />
 
         {/* Motor Control Inputs */}
-        {isMotorMode && <div className="space-y-3">
+        {isMotorMode && <div className="space-y-3 py-[14px]">
             <Label className="text-sm text-gray-100">Motor IDs</Label>
             <Input value={motorIds} onChange={e => setMotorIds(e.target.value)} placeholder="e.g., 0 1 2" className="bg-black/40 border-white/30 text-white h-8 text-sm" />
             <Label className="text-sm text-gray-100">Motor Goals</Label>
@@ -155,7 +153,7 @@ const MissionControlPanel = () => {
           </div>}
 
         {/* Amount Slider */}
-        <div className="space-y-2">
+        <div className="space-y-2 py-[15px]">
           <Label className="text-sm text-gray-100">
             Amount: {amount[0].toFixed(1)}
           </Label>
@@ -168,7 +166,7 @@ const MissionControlPanel = () => {
 
         {/* Control Buttons */}
         <div className="space-y-2">
-          <Button onClick={handleSendGoal} className="w-full text-sm py-4 bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan">
+          <Button onClick={handleSendGoal} className="w-full text-sm bg-gradient-to-r from-space-cyan to-space-blue hover:from-space-blue hover:to-space-cyan py-[23px]">
             Execute Command
           </Button>
           
