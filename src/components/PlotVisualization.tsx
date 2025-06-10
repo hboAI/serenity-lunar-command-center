@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -142,7 +141,7 @@ const PlotVisualization = ({ topics, selectedTopics }: PlotVisualizationProps) =
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
-    </div>
+    </Card>
   );
 
   const selectedPlots = selectedTopics.filter(topic => 
