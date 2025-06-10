@@ -9,17 +9,17 @@ const Index = () => {
       {/* Corner Logos */}
       <div className="absolute top-6 left-6 z-20">
         <img 
-          src="/lovable-uploads/03f0f802-f1fa-4cfc-86b1-d9a0cc73f98e.png" 
-          alt="RSL - Robotic Systems Lab" 
-          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+          src="/lovable-uploads/66b1167b-bb43-4ffc-9b2c-db26285e5756.png" 
+          alt="Serenity Logo" 
+          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
         />
       </div>
       
       <div className="absolute top-6 right-6 z-20">
         <img 
-          src="/lovable-uploads/66b1167b-bb43-4ffc-9b2c-db26285e5756.png" 
-          alt="White Logo" 
-          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+          src="/lovable-uploads/03f0f802-f1fa-4cfc-86b1-d9a0cc73f98e.png" 
+          alt="RSL - Robotic Systems Lab" 
+          className="h-16 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
         />
       </div>
 

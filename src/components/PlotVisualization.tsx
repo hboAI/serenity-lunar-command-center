@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,13 +61,13 @@ const PlotVisualization = ({ topics, selectedTopics }: PlotVisualizationProps) =
   }, [selectedTopics]);
 
   const renderMotorPlot = () => (
-    <Card className="h-full bg-black/20 border-white/20">
+    <Card className="h-full bg-black/20 border-white/20 max-h-96">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg text-white">Motor Status</CardTitle>
       </CardHeader>
-      <CardContent className="h-[calc(100%-80px)]">
+      <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={motorData}>
+          <LineChart data={motorData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10} />
             <YAxis stroke="#9CA3AF" fontSize={10} />
@@ -88,13 +89,13 @@ const PlotVisualization = ({ topics, selectedTopics }: PlotVisualizationProps) =
   );
 
   const renderLuxPlot = () => (
-    <Card className="h-full bg-black/20 border-white/20">
+    <Card className="h-full bg-black/20 border-white/20 max-h-96">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg text-white">Environmental Sensors (LUX)</CardTitle>
       </CardHeader>
-      <CardContent className="h-[calc(100%-80px)]">
+      <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={luxData}>
+          <LineChart data={luxData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10} />
             <YAxis stroke="#9CA3AF" fontSize={10} />
@@ -116,13 +117,13 @@ const PlotVisualization = ({ topics, selectedTopics }: PlotVisualizationProps) =
   );
 
   const renderSen66Plot = () => (
-    <Card className="h-full bg-black/20 border-white/20">
+    <Card className="h-full bg-black/20 border-white/20 max-h-96">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg text-white">Air Quality (SEN66)</CardTitle>
       </CardHeader>
-      <CardContent className="h-[calc(100%-80px)]">
+      <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={sen66Data}>
+          <LineChart data={sen66Data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10} />
             <YAxis stroke="#9CA3AF" fontSize={10} />
